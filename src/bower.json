@@ -1,0 +1,21 @@
+{
+  "name": "Company-Registry",
+  "version": "0.0.0",
+  "authors": [
+    "Nikola Luburić <luburic91@gmail.com>"
+  ],
+  "description": "This web application represents a registry which tracks companies and their employees",
+  "main": "index.html",
+  "keywords": [
+    "angular best practices",
+    "project structure",
+    "bower",
+    "gulp"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.4.6",
+    "angular-resource": "~1.4.6",
+    "angular-ui-router": "~0.2.15"
+  }
+}

@@ -1,0 +1,18 @@
+.assignment {
+	color:#3389ca;
+}
+
+.link {
+	cursor:pointer;
+}
+
+.sideBar {
+	background-color: #F8F8F8;
+}
+
+.nav-sidebar > .activeItem > a,
+.nav-sidebar > .activeItem > a:hover,
+.nav-sidebar > .activeItem > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}

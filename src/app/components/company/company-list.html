@@ -1,0 +1,74 @@
+<div>
+    <h3>Company list</h3>
+	<table class="table table-hover table-bordered">
+		<thead>
+		<tr class="active">
+			<td><input class="form-control" id="pib" name="pib" placeholder="PIB" ng-model="clc.search.pib"></td>
+			<td><input class="form-control" id="name" name="name" placeholder="Name" ng-model="clc.search.name"></td>
+			<td><input class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone number" ng-model="clc.search.phoneNumber"></td>
+			<td><input class="form-control" id="email" name="email" placeholder="E-mail" ng-model="clc.search.email"></td>
+		</tr>
+		<tr class="active">
+			<th>
+				<a class="link" ng-href ng-click="clc.tableChanged('pib')">
+                    PIB
+                    <i class="fa fa-sort disabled" ng-hide="clc.sort == 'pib'"></i>
+                    <i class="fa fa-sort-desc" ng-show="clc.sort == 'pib' && clc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="clc.sort == 'pib' && clc.sortDirection == '-'"></i>
+                </a>
+			</th>
+			<th>
+				<a class="link" ng-href ng-click="clc.tableChanged('name')">
+                    Name
+                    <i class="fa fa-sort disabled" ng-hide="clc.sort == 'name'"></i>
+                    <i class="fa fa-sort-desc" ng-show="clc.sort == 'name' && clc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="clc.sort == 'name' && clc.sortDirection == '-'"></i>
+                </a>
+			</th>
+			<th>
+				<a class="link" ng-href ng-click="clc.tableChanged('phoneNumber')">
+                    Phone number
+                    <i class="fa fa-sort disabled" ng-hide="clc.sort == 'phoneNumber'"></i>
+                    <i class="fa fa-sort-desc" ng-show="clc.sort == 'phoneNumber' && clc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="clc.sort == 'phoneNumber' && clc.sortDirection == '-'"></i>
+                </a>
+			</th>
+			<th>
+				<a class="link" ng-href ng-click="clc.tableChanged('email')">
+                    E-mail
+                    <i class="fa fa-sort disabled" ng-hide="clc.sort == 'email'"></i>
+                    <i class="fa fa-sort-desc" ng-show="clc.sort == 'email' && clc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="clc.sort == 'email' && clc.sortDirection == '-'"></i>
+                </a>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-click="clc.edit(company._id)" class="link" ng-repeat="company in clc.companies | filter : clc.search | orderBy : clc.sortDirection + clc.sort | limitTo : clc.pagination.pageSize : (clc.pagination.currentPage-1) * clc.pagination.pageSize">
+			<td>{{company.pib}}</td>
+			<td>{{company.name}}</td>
+			<td>{{company.phoneNumber}}</td>
+			<td>{{company.email}}</td>
+		</tr>
+		</tbody>
+	</table>
+	<ul class="pagination">
+        <li ng-class="{'disabled': clc.pagination.currentPage == 1}">
+            <a class="link" ng-href aria-label="Previous" ng-click="clc.pagination.changePage(clc.pagination.currentPage - 1)">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li ng-repeat="page in clc.pagination.pages track by $index" ng-class="{'active':($index+1) == clc.pagination.currentPage}">
+            <a class="link" ng-href ng-click="clc.pagination.changePage($index+1)">{{$index+1}}</a>
+        </li>
+        <li ng-class="{'disabled': clc.pagination.currentPage == clc.pagination.pages.length}">
+            <a class="link" ng-href aria-label="Next" ng-click="clc.pagination.changePage(clc.pagination.currentPage + 1)">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div>
+        <a class="btn btn-primary" href="#/company/add">Add new company</a>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div>
+	<h2>Assignment</h2>
+	<p>
+		Make sure you read the <a href="#/about">About</a> page before starting your assignment.<br/>
+		Your assignment will be to take what we've learned today and apply it to your project.<br/>
+		<b>Important:</b> if you have completed all the non-bonus excercises from the last class then it is highly recommended that you take your project and work with it instead of this one. For your convenience copy the assignment from below into your home.html file. If you haven't finished all of the non-bonus excercises use this project instead.<br/>
+		<em>Note:</em> use bower to install all the needed libraries.
+	</p>
+	<div class="assignment">
+		Complete the following exercises:
+		<ol>
+			<li>
+				Setup your project on a git remote repository (<em>Note:</em> if you're using windows make sure you install GitBash before proceeding):
+				<ol>
+					<li>Create a profile on GitLab, BitBucket or GitHub (<em>Note:</em> GitHub offers only public repositories);</li>
+					<li>Create a new repository and set the name to something meaningful, <i>i.e.</i> CompanyRegistry;</li>
+					<li>Open the terminal in the root folder of your project, or even one level above that and initialize a local git repository (git init)</li>
+					<li><b>Bonus:</b> read about gitignore and add the dist, assets/js and node_modules folder to be ignored;</li>
+					<li>Add all the project files and folders to the staging area (git add), excluding the ones that your tools (npm, bower, gulp) generate, <i>i.e.</i> node_modules, assets/js and the contet of the dist folder;</li>
+					<li>Perform a commit on your master branch (git commit -m "Project init")</li>
+					<li>Push to your remote repository (<em>Note:</em> you will be asked for credentials so read the terminal and follow the instructions);</li>
+					<li>Create and switch to a new branch called "development" (git branch development; git branch checkout development);</li>
+					<li>All code you write from now on will be commited to this branch and only when you are sure you've created a whole component and tested it completely will you checkout your master branch and merge the new features from your development branch;</li>
+					<li><b>Bonus:</b> create a new branch every time you start developing a new component or feature, after which you will merge the changes into your development branch and delete the component branch;</li>
+					<li><b>Bonus:</b> create a conflict and resolve it by creating two branches, editing the same file (and the same code) on both branches and then merging the changes into the development branch from both branches;</li>
+				</ol>
+			</li>
+			<li>
+				Using the localization examples (2 and 3) extend your application to provide support for i18n. Think about where the code to register and configure the dependencies should be placed and where you will write the translations for the labels:
+				<ol>
+					<li>Localize every string label in the employee.html and employee-list.html file, including the string you get from the router;</li>
+					<li>Install angular-dynamic-locale and set the default language for both angular-dynamic-locale and angular-translate to English;</li>
+					<li>Extend your header to provide buttons/links/images that changes the language of the user interface on click;</li>
+				</ol>
+			</li>
+			<li>
+				Use the angular-ui-bootstrap library to extend your application using the following components:
+				<ol>
+					<li>Expand the employee add/edit form so that there is a field named "dateOfBirth" and use the datepicker component for that field;</li>
+					<li>Expand the add/edit form of the company by adding a "Add new place" button next to the Headquarters combobox. By clicking on the button, a modal window should appear with the name and postal code field for creating a new place. By adding a new place make sure to both add the new place to the list of places in the controller and save the new place on MongoLab;</li>
+					<li><b>Bonus:</b> expand the add/edit form of the employee to provide the same functionality for adding new places (<em>Note:</em> since both employee and company use the same modal window, consider where to place the modal template and controller to avoid code duplication);</li>
+					<li><b>Bonus:</b> transform the localization buttons to form a dropdown menu using ui-bootstrap;</li>
+				</ol>
+			</li>
+			<li>
+				Change the code of all the combobox components to use the ng-option directive instead of ng-repeat (<em>Note:</em> you'll notice that this breaks the search by place of birth functionality so avoid changing that combobox);
+			</li>
+			<li>
+				<b>Bonus:</b> when deleting places add the following functionality:
+				<ol>
+					<li><b>Bonus:</b> If the place is referenced somewhere, <i>i.e.</i> there is a company which has the headquarters field set to that place don't allow that place to be deleted and use the modal dialogue to notify the user that the place is referenced (<em>Note:</em> use angular.forEach);</li>
+					<li><b>Bonus:</b> If the place isn't referenced anywhere display a modal dialogue which asks the user if he is sure he wants to delete this place;</li>
+					<li><b>Bonus:</b> Provide this modal dialogue check when deleting employees and companies and avoid code duplication;</li>
+				</ol>
+			</li>
+		</ol>
+		<ul>
+			<li>Focus on doing non-bonus excercises during class;</b>
+			<li>What you don't complete during the class remains as a homework assignment;</li>
+			<li>It is highly recommended that you complete each of the listed excercises, including bonus excercises;</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,54 @@
+<div>
+    <h3>Place list</h3>
+	<table class="table table-hover table-bordered">
+		<thead>
+		<tr class="active">
+			<td><input class="form-control" id="postalCode" name="postalCode" placeholder="Postal code" ng-model="plc.search.postalCode"></td>
+			<td><input class="form-control" id="name" name="name" placeholder="Name" ng-model="plc.search.name"></td>
+		</tr>
+		<tr class="active">
+			<th>
+				<a class="link" ng-href ng-click="plc.tableChanged('postalCode')">
+                    Postal code
+                    <i class="fa fa-sort disabled" ng-hide="plc.sort == 'postalCode'"></i>
+                    <i class="fa fa-sort-desc" ng-show="plc.sort == 'postalCode' && plc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="plc.sort == 'postalCode' && plc.sortDirection == '-'"></i>
+                </a>
+			</th>
+			<th>
+				<a class="link" ng-href ng-click="plc.tableChanged('name')">
+                    Name
+                    <i class="fa fa-sort disabled" ng-hide="plc.sort == 'name'"></i>
+                    <i class="fa fa-sort-desc" ng-show="plc.sort == 'name' && plc.sortDirection == '+'"></i>     
+                    <i class="fa fa-sort-asc" ng-show="plc.sort == 'name' && plc.sortDirection == '-'"></i>
+                </a>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-click="plc.edit(place._id)" class="link" ng-repeat="place in plc.places | filter : plc.search | orderBy : plc.sortDirection + plc.sort | limitTo : plc.pagination.pageSize : (plc.pagination.currentPage-1) * plc.pagination.pageSize">
+			<td>{{place.postalCode}}</td>
+			<td>{{place.name}}</td>
+		</tr>
+		</tbody>
+	</table>
+	<ul class="pagination">
+        <li ng-class="{'disabled': plc.pagination.currentPage == 1}">
+            <a class="link" ng-href aria-label="Previous" ng-click="plc.pagination.changePage(pagination.currentPage - 1)">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li ng-repeat="page in plc.pagination.pages track by $index" ng-class="{'active':($index+1) == plc.pagination.currentPage}">
+            <a class="link" ng-href ng-click="plc.pagination.changePage($index+1)">{{$index+1}}</a>
+        </li>
+        <li ng-class="{'disabled': plc.pagination.currentPage == plc.pagination.pages.length}">
+            <a class="link" ng-href aria-label="Next" ng-click="plc.pagination.changePage(plc.pagination.currentPage + 1)">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div>
+        <a class="btn btn-primary" href="#/place/add">Add new place</a>
+    </div>
+</div>

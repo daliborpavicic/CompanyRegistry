@@ -1,0 +1,17 @@
+<ul class="nav nav-sidebar nav-sidebar-padding sideBar">
+    <li ng-class="{activeItem:sbc.isActive('home')}">
+        <a ui-sref='main.home'><span>Home</span></a>
+    </li>
+    <li ng-class="{activeItem:sbc.isActive('about')}">
+        <a ui-sref='main.about'><span>About</span></a>
+    </li>
+    <li ng-class="{activeItem:sbc.isActive('company')}">
+        <a ui-sref='main.companyList'><span>Companies</span></a>
+    </li>
+    <li ng-class="{activeItem:sbc.isActive('employee')}">
+        <a ui-sref='main.employeeList'><span>Employees</span></a>
+    </li>
+    <li ng-class="{activeItem:sbc.isActive('place')}">
+        <a ui-sref='main.placeList'><span>Places</span></a>
+    </li>
+</ul>
