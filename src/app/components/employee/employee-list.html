@@ -1,13 +1,13 @@
 <div>
-    <h3>Employee list</h3>
+    <h3 translate>{{'EMPLOYEE.LIST'}}</h3>
 	<table class="table table-hover table-bordered">
 		<thead>
 		<tr class="active">
-			<td><input class="form-control" id="jmbg" name="jmbg" placeholder="Jmbg" ng-model="elc.search.jmbg"></td>
-			<td><input class="form-control" id="name" name="name" placeholder="Name" ng-model="elc.search.name"></td>
-			<td><input class="form-control" id="surname" name="surname" placeholder="Surname" ng-model="elc.search.surname"></td>
-			<td><input class="form-control" id="email" name="email" placeholder="E-mail" ng-model="elc.search.email"></td>
-            <td>
+			<td><input class="form-control" id="jmbg" name="jmbg" placeholder="{{'EMPLOYEE.JMBG'| translate}}" ng-model="elc.search.jmbg"></td>
+			<td><input class="form-control" id="name" name="name" placeholder="{{'EMPLOYEE.NAME'| translate}}" ng-model="elc.search.name"></td>
+			<td><input class="form-control" id="surname" name="surname" placeholder="{{'EMPLOYEE.SURNAME'| translate}}" ng-model="elc.search.surname"></td>
+			<td><input class="form-control" id="email" name="email" placeholder="{{'EMPLOYEE.EMAIL'| translate}}" ng-model="elc.search.email"></td>
+            <td>    
                 <select ng-model="elc.search.placeOfBirth" id="placeOfBirth" class="form-control">
                     <option value="">---</option>
                     <option ng-repeat="place in elc.places" value="{{place.name}}">{{place.name}}</option>
@@ -17,7 +17,7 @@
 		<tr class="active">
 			<th>
 				<a class="link" ng-href ng-click="elc.tableChanged('jmbg')">
-                    Jmbg
+                    {{'EMPLOYEE.JMBG'| translate}}
                     <i class="fa fa-sort disabled" ng-hide="elc.sort == 'jmbg'"></i>
                     <i class="fa fa-sort-desc" ng-show="elc.sort == 'jmbg' && elc.sortDirection == '+'"></i>     
                     <i class="fa fa-sort-asc" ng-show="elc.sort == 'jmbg' && elc.sortDirection == '-'"></i>
@@ -25,7 +25,7 @@
 			</th>
 			<th>
 				<a class="link" ng-href ng-click="elc.tableChanged('name')">
-                    Name
+                    {{'EMPLOYEE.NAME'| translate}}
                     <i class="fa fa-sort disabled" ng-hide="elc.sort == 'name'"></i>
                     <i class="fa fa-sort-desc" ng-show="elc.sort == 'name' && elc.sortDirection == '+'"></i>     
                     <i class="fa fa-sort-asc" ng-show="elc.sort == 'name' && elc.sortDirection == '-'"></i>
@@ -33,7 +33,7 @@
 			</th>
 			<th>
 				<a class="link" ng-href ng-click="elc.tableChanged('surname')">
-                    Surname
+                    {{'EMPLOYEE.SURNAME'| translate}}
                     <i class="fa fa-sort disabled" ng-hide="elc.sort == 'surname'"></i>
                     <i class="fa fa-sort-desc" ng-show="elc.sort == 'surname' && elc.sortDirection == '+'"></i>     
                     <i class="fa fa-sort-asc" ng-show="elc.sort == 'surname' && elc.sortDirection == '-'"></i>
@@ -41,7 +41,7 @@
 			</th>
 			<th>
 				<a class="link" ng-href ng-click="elc.tableChanged('email')">
-                    E-mail
+                    {{'EMPLOYEE.EMAIL'| translate}}
                     <i class="fa fa-sort disabled" ng-hide="elc.sort == 'email'"></i>
                     <i class="fa fa-sort-desc" ng-show="elc.sort == 'email' && elc.sortDirection == '+'"></i>     
                     <i class="fa fa-sort-asc" ng-show="elc.sort == 'email' && elc.sortDirection == '-'"></i>
@@ -49,7 +49,7 @@
 			</th>
             <th>
                 <a class="link" ng-href ng-click="elc.tableChanged('placeOfBirth')">
-                    Place of birth
+                    {{'EMPLOYEE.PLACEOFBIRTH'| translate}}
                     <i class="fa fa-sort disabled" ng-hide="elc.sort == 'placeOfBirth'"></i>
                     <i class="fa fa-sort-desc" ng-show="elc.sort == 'placeOfBirth' && elc.sortDirection == '+'"></i>     
                     <i class="fa fa-sort-asc" ng-show="elc.sort == 'placeOfBirth' && elc.sortDirection == '-'"></i>
@@ -84,6 +84,6 @@
     </ul>
     <hr>
     <div>
-        <a class="btn btn-primary" href="#/employee/add">Add new employee</a>
+        <a class="btn btn-primary" href="#/employee/add">{{'EMPLOYEE.NEW'| translate}}</a>
     </div>
 </div>

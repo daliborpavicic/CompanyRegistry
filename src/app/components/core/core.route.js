@@ -19,7 +19,9 @@
 						controllerAs: 'sbc'
 					},
 					'header': {
-						templateUrl: 'app/components/core/header.html'	
+						templateUrl: 'app/components/core/header.html',
+						controller: 'HeaderController',
+						controllerAs: 'hc'	
 					}
 				}
 			})

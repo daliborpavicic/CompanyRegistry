@@ -67,7 +67,7 @@
 		function createEmployee(Employee) {
 			return new Employee();
 		}
-
+		
 		function addTitle() {
 			return "Add employee";
 		}
