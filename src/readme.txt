@@ -1,3 +1,3 @@
 Hello, World!
 
-Git this joke over with.
+Git resolve the conflict.
