@@ -1,3 +1,3 @@
 Hello, World!
 
-Git.
+Git on with the assignment.
