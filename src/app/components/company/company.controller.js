@@ -5,8 +5,8 @@
 		.module('company-registry.company')
 		.controller('CompanyController', CompanyController);
 
-	CompanyController.$inject = ['$location', 'company', 'places', 'title'];
-	function CompanyController($location, company, places, title) {
+	CompanyController.$inject = ['$location', 'company', 'places', 'title', 'placeModal'];
+	function CompanyController($location, company, places, title, placeModal) {
 		var cc = this;
 
 		cc.places = places;
@@ -16,6 +16,18 @@
 
 		cc.revertChanges = function() {
 			cc.company = angular.copy(cc.companyCopy);
+		};
+
+		cc.openModal = function () {
+
+			var onUpdateSuccess = function(data) {
+				// when database update succedds, 
+				// update view model also
+				cc.places.push(data);
+				cc.company.headquarters = data.name;
+			};
+
+			placeModal.open().then(onUpdateSuccess);
 		};
 
 		cc.save = function() {
