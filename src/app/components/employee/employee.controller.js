@@ -14,6 +14,13 @@
 		ec.employeeCopy = angular.copy(ec.employee);
 		ec.title = title;
 
+		ec.datepicker = {
+			minDate: new Date(1900,1,1),
+			maxDate: new Date(),
+			format: 'fullDate',
+			opened: false
+		};
+
 		ec.revertChanges = function() {
 			ec.employee = angular.copy(ec.employeeCopy);
 		};

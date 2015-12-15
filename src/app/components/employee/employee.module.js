@@ -2,5 +2,5 @@
 	"use strict";
 
 	angular
-		.module('company-registry.employee', ['ngResource', 'ui.router']);
+		.module('company-registry.employee', ['ngResource', 'ui.router', 'ui.bootstrap']);
 })();
