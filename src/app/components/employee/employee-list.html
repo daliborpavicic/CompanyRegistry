@@ -8,7 +8,7 @@
 			<td><input class="form-control" id="surname" name="surname" placeholder="{{'EMPLOYEE.SURNAME'| translate}}" ng-model="elc.search.surname"></td>
 			<td><input class="form-control" id="email" name="email" placeholder="{{'EMPLOYEE.EMAIL'| translate}}" ng-model="elc.search.email"></td>
             <td>    
-                <select ng-model="elc.search.placeOfBirth" id="placeOfBirth" class="form-control">
+                <select id="placeOfBirth" class="form-control"  ng-model="elc.search.placeOfBirth">
                     <option value="">---</option>
                     <option ng-repeat="place in elc.places" value="{{place.name}}">{{place.name}}</option>
                 </select>

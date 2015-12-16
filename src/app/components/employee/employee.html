@@ -42,9 +42,10 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="placeOfBirth">{{'EMPLOYEE.PLACEOFBIRTH'| translate}}</label>
             <div class="col-sm-5 col-md-3">
-                <select ng-model="ec.employee.placeOfBirth" id="placeOfBirth" class="form-control">
+                <select class="form-control" id="placeOfBirth" 
+                    ng-model="ec.employee.placeOfBirth" 
+                    ng-options="place.name as place.name for place in ec.places">
                     <option value="">---</option>
-                    <option ng-repeat="place in ec.places" value="{{place.name}}">{{place.name}}</option>
                 </select>
             </div>
             <button type="button" class="btn btn-default" ng-click="ec.openModal()">
