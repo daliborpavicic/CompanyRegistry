@@ -23,7 +23,6 @@
 			// this function is called when dialog is closed with ok button
 			// and data from the dialog are passed as parameter
 		    function onModalClose(newPlace) {
-		    	debugger;
 		    	newPlace._id = newPlace.postalCode;
 
 			    function onUpdateSuccess(data) {

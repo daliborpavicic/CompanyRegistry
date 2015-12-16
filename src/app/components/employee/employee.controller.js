@@ -5,8 +5,8 @@
 		.module('company-registry.employee')
 		.controller('EmployeeController', EmployeeController);
 
-	EmployeeController.$inject = ['$location', 'employee', 'places', 'title'];
-	function EmployeeController($location, employee, places, title) {
+	EmployeeController.$inject = ['$location', 'employee', 'places', 'title', 'placeModal'];
+	function EmployeeController($location, employee, places, title, placeModal) {
 		var ec = this;
 
 		ec.places = places;
@@ -23,6 +23,16 @@
 
 		ec.revertChanges = function() {
 			ec.employee = angular.copy(ec.employeeCopy);
+		};
+
+		ec.openModal = function() {
+
+			var onUpdateSucess = function(data) {
+				ec.places.push(data);
+				ec.employee.placeOfBirth = data.name;
+			};
+
+			placeModal.open().then(onUpdateSucess);
 		};
 
 		ec.save = function() {

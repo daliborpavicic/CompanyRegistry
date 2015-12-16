@@ -41,12 +41,15 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="placeOfBirth">{{'EMPLOYEE.PLACEOFBIRTH'| translate}}</label>
-            <div class="col-sm-6 col-md-4">
+            <div class="col-sm-5 col-md-3">
                 <select ng-model="ec.employee.placeOfBirth" id="placeOfBirth" class="form-control">
                     <option value="">---</option>
                     <option ng-repeat="place in ec.places" value="{{place.name}}">{{place.name}}</option>
                 </select>
             </div>
+            <button type="button" class="btn btn-default" ng-click="ec.openModal()">
+                <i class="glyphicon glyphicon-plus"></i>
+            </button>
         </div>
         <div class="col-sm-offset-2">
         	<button type="button" class="btn btn-primary" ng-click="ec.save()">{{'COMMON.SAVE'| translate}}</button>
