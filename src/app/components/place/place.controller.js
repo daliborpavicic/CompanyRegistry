@@ -5,8 +5,8 @@
 		.module('company-registry.place')
 		.controller('PlaceController', PlaceController);
 
-	PlaceController.$inject = ['$location', 'place', 'title'];
-	function PlaceController($location, place, title) {
+	PlaceController.$inject = ['$location', 'place', 'title', 'deleteModal'];
+	function PlaceController($location, place, title, deleteModal) {
 		var pc = this;
 			
 		pc.place = place;
@@ -25,7 +25,14 @@
 		};
 
 		pc.remove = function() {
-			pc.place.$delete(success);
+
+			var onDeleteConfirmed = function(isConfirmed) {
+				if(isConfirmed) {
+					pc.place.$delete(success);
+				}
+			};
+
+			deleteModal.open("place").then(onDeleteConfirmed);
 		};
 
 		function success() {
