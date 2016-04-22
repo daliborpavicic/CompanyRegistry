@@ -1,6 +1,6 @@
 {
   "name": "Company-Registry",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "This web application represents a registry which tracks companies and their employees",
   "main": "gulpfile.js",
   "keywords": [
@@ -9,7 +9,7 @@
     "ui bootstrap",
     "ngOptions"
   ],
-  "author": "Nikola Luburić",
+  "author": "Dalibor Pavičić",
   "license": "ISC",
   "devDependencies": {
     "gulp": "^3.9.0",
