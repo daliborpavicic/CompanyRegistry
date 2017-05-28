@@ -2,7 +2,7 @@
   "name": "Company-Registry",
   "version": "0.0.0",
   "authors": [
-    "Nikola Luburić <luburic91@gmail.com>"
+    "Dalibor Pavicic"
   ],
   "description": "This web application represents a registry which tracks companies and their employees",
   "main": "index.html",
