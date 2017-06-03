@@ -1,0 +1,62 @@
+<div>
+	<h3>{{ec.title}}</h3>
+    <hr>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="jmbg">{{'EMPLOYEE.JMBG'| translate}}</label>
+            <div class="col-sm-6 col-md-4">
+            	<input type="text" ng-model="ec.employee.jmbg" id="jmbg" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="name">{{'EMPLOYEE.NAME'| translate}}</label>
+            <div class="col-sm-6 col-md-4">
+            	<input type="text" ng-model="ec.employee.name" id="name" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="surname">{{'EMPLOYEE.SURNAME'| translate}}</label>
+            <div class="col-sm-6 col-md-4">
+            	<input type="text" ng-model="ec.employee.surname" id="surname" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="dateOfBirth">{{'EMPLOYEE.DATEOFBIRTH'| translate}}</label>
+            <div class="col-sm-6 col-md-4">
+                <p class="input-group">
+                    <input class="form-control" type="text"  uib-datepicker-popup="{{ec.datepicker.format}}" ng-model="ec.employee.dateOfBirth" is-open="ec.datepicker.opened" ng-required="true" min-date="ec.datepicker.minDate" max-date="ec.datepicker.maxDate" close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="ec.datepicker.opened = true">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                    </span>
+                </p>
+            </div>      
+        </div>        
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="email">{{'EMPLOYEE.EMAIL'| translate}}</label>
+            <div class="col-sm-6 col-md-4">
+            	<input type="text" ng-model="ec.employee.email" id="email" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="placeOfBirth">{{'EMPLOYEE.PLACEOFBIRTH'| translate}}</label>
+            <div class="col-sm-5 col-md-3">
+                <select class="form-control" id="placeOfBirth" 
+                    ng-model="ec.employee.placeOfBirth" 
+                    ng-options="place.name as place.name for place in ec.places">
+                    <option value="">---</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-default" ng-click="ec.openModal()">
+                <i class="glyphicon glyphicon-plus"></i>
+            </button>
+        </div>
+        <div class="col-sm-offset-2">
+        	<button type="button" class="btn btn-primary" ng-click="ec.save()">{{'COMMON.SAVE'| translate}}</button>
+        	<button type="button" class="btn btn-warning" ng-click="ec.revertChanges()">{{'COMMON.REVERT'| translate}}</button>
+        	<button type="button" class="btn btn-danger" ng-show="ec.employee._id" ng-click="ec.remove()">{{'COMMON.DELETE'| translate}}</button>
+        	<a class="btn btn-default" href="#/employee"><i class="fa fa-chevron-left"></i> {{'COMMON.BACK'| translate}}</a>
+        </div>
+    </form>
+</div>

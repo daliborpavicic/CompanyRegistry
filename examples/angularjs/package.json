@@ -1,0 +1,26 @@
+{
+  "name": "Company-Registry",
+  "version": "0.0.1",
+  "description": "This web application represents a registry which tracks companies and their employees",
+  "main": "gulpfile.js",
+  "keywords": [
+    "git",
+    "internationalization",
+    "ui bootstrap",
+    "ngOptions"
+  ],
+  "author": "Dalibor Pavicic",
+  "license": "ISC",
+  "devDependencies": {
+    "bower-files": "^3.14.1",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-concat-css": "^2.2.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-uglify": "^1.4.0",
+    "gulp-webserver": "^0.9.1"
+  }
+}
