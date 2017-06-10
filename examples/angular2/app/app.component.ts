@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
     selector: 'company-registry',
-    template: `<h2>Welcome to Company registry!</h2>`
+    template: `
+    <side-nav></side-nav>
+    <place-list></place-list>
+`
 })
 export class CompanyRegistryAppComponent {
 
