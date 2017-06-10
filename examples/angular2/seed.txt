@@ -1,0 +1,46 @@
+1. Install the Postman plugin for Google Chrome;
+2. Start it and select the method POST and enter the full URL for your employee collection on mongolab, including apiKey (e.g. "https://api.mongolab.com/api/1/databases/kursevi-angular/collections/employee?apiKey=XXXXXXXXXX");
+3. Select the "Body" tab and click on the "raw" radio button, after which you should choose "JSON" from the dropdown menu located right;
+4. Paste the following JSON array in the text area bellow:
+
+[
+    {"_id": "0000000000000", "jmbg": "0000000000000", "name":"Aleksandar", "surname":"Atanacković", "email":"alek@gmail.com"},
+    {"_id": "1111111111111", "jmbg": "1111111111111", "name":"Strahinja", "surname":"Ristić", "email":"rist@gmail.com"},
+    {"_id": "2222222222222", "jmbg": "2222222222222", "name":"Boban", "surname":"Bobanić", "email":"boban@gmail.com"},
+    {"_id": "3333333333333", "jmbg": "3333333333333", "name":"Miroslav", "surname":"Terzić", "email":"miki@gmail.com"},
+    {"_id": "4444444444444", "jmbg": "4444444444444", "name":"Dragam", "surname":"Mikić", "email":"drag.mik@gmail.com"},
+    {"_id": "5555555555555", "jmbg": "5555555555555", "name":"Vasilije", "surname":"Ristić", "email":"vasa@gmail.com"},
+    {"_id": "6666666666666", "jmbg": "6666666666666", "name":"Stefan", "surname":"Trifković", "email":"trifa@gmail.com"},
+    {"_id": "7777777777777", "jmbg": "7777777777777", "name":"Goran", "surname":"Kondić", "email":"goks@gmail.com"},
+    {"_id": "8888888888888", "jmbg": "8888888888888", "name":"Milan", "surname":"Mičić", "email":"milan@gmail.com"},
+    {"_id": "9999999999999", "jmbg": "9999999999999", "name":"Siniša", "surname":"Stević", "email":"sima@gmail.com"},
+    {"_id": "1212121212121", "jmbg": "1212121212121", "name":"Boris", "surname":"Čubrić", "email":"boki@gmail.com"},
+    {"_id": "2323232323232", "jmbg": "2323232323232", "name":"Lazar", "surname":"Mulić", "email":"laki@gmail.com"},
+    {"_id": "3434343434343", "jmbg": "3434343434343", "name":"Dragan", "surname":"Simić", "email":"drag.sim@gmail.com"},
+    {"_id": "5656565656565", "jmbg": "5656565656565", "name":"Slavica", "surname":"Tešić", "email":"slavica@gmail.com"},
+    {"_id": "1251251251251", "jmbg": "1251251251251", "name":"Jelena", "surname":"Mandić", "email":"jeca@gmail.com"}
+]
+
+5. Click send;
+
+
+Repeat steps 2-5 for the company collection, and submit the following array:
+
+[
+    {"_id": "000", "pib": "000", "name":"Univer Export", "phoneNumber":"021/666-888", "email":"univer@gmail.com"},
+    {"_id": "111", "pib": "111", "name":"CMarket", "phoneNumber":"021/333-666", "email":"market@gmail.com"},
+    {"_id": "222", "pib": "222", "name":"Roda", "phoneNumber":"021/111-999", "email":"roda@gmail.com"},
+    {"_id": "333", "pib": "333", "name":"Idea", "phoneNumber":"021/555-000", "email":"idea@gmail.com"},
+    {"_id": "444", "pib": "444", "name":"Tempo", "phoneNumber":"021/222-444", "email":"tempo@gmail.com"}
+]
+
+Repeat steps 2-5 for the place collection, and submit the following array:
+
+[
+    {"_id": "21000", "postalCode": "21000", "name":"Novi Sad"},
+    {"_id": "11000", "postalCode": "11000", "name":"Beograd"},
+    {"_id": "24000", "postalCode": "24000", "name":"Subotica"},
+    {"_id": "34000", "postalCode": "34000", "name":"Kragujevac"},
+    {"_id": "22000", "postalCode": "22000", "name":"Sremska Mitrovica"},
+    {"_id": "31000", "postalCode": "31000", "name":"Užice"}
+]

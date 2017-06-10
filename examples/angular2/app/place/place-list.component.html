@@ -1,0 +1,23 @@
+<div>
+	<h3>The list of places</h3>
+	<table>
+		<thead>
+		<tr>
+			<th>
+				Zip code
+			</th>
+			<th>
+				Name
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<div *ngFor="let place of places" class="row">
+			<place-list-item
+					[place]="place"
+					(eventClick)="handlePlaceClicked($event)">
+			</place-list-item>
+		</div>
+		</tbody>
+	</table>
+</div>
