@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'company-registry',
     template: `
     <side-nav></side-nav>
-    <place-list></place-list>
+    <router-outlet></router-outlet>
 `
 })
 export class CompanyRegistryAppComponent {

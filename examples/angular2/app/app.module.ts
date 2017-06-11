@@ -1,26 +1,56 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import {RouterModule} from "@angular/router";
+
+import {
+    PlaceListComponent,
+    PlaceListItemComponent,
+    PlaceService,
+    PlaceDetailsComponent,
+    CreatePlaceComponent,
+    PlaceRouteActivator,
+    PlaceListResolver
+} from './place/index';
 
 import { CompanyRegistryAppComponent } from './app.component';
-import { PlaceListComponent } from './place/place-list.component';
-import { PlaceListItemComponent } from './place/place-list-item.component';
 import { SideNavComponent } from './nav/side-nav.component';
-import { PlaceService } from './place/shared/place.service';
 import { ToastrService } from './common/toastr.service';
+import {appRoutes} from "./routes";
+import {Error404Component} from "./errors/404.component";
 
 @NgModule({
-    imports: [BrowserModule],
+    imports: [
+        BrowserModule,
+        RouterModule.forRoot(appRoutes)
+    ],
     declarations: [ // todo: You need to declare components to be bootstrapped
         CompanyRegistryAppComponent,
         PlaceListComponent,
         PlaceListItemComponent,
-        SideNavComponent
+        SideNavComponent,
+        PlaceDetailsComponent,
+        CreatePlaceComponent,
+        Error404Component
     ],
     providers: [
         PlaceService,
-        ToastrService
+        ToastrService,
+        PlaceRouteActivator,
+        {
+            provide: 'canDeactivateCreatePlace',
+            useValue: checkDirtyState
+        },
+        PlaceListResolver
     ],
     bootstrap: [CompanyRegistryAppComponent]
 })
-
 export class AppModule {}
+
+function checkDirtyState(component:CreatePlaceComponent) {
+    if (component.isDirty) {
+        return window.confirm('You have not saved this place, do you really want to cancel ?');
+    }
+
+    return false;
+}
+
