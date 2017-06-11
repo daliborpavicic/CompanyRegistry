@@ -1,4 +1,16 @@
 <ul>
-	<li>Home</li>
-	<li>Places</li>
+	<li>
+		<a [routerLink]="['/']"
+		   routerLinkActive="active"
+		   [routerLinkActiveOptions]="{ exact: true }">
+			Home
+		</a>
+	</li>
+	<li>
+		<a [routerLink]="['/places']"
+		   routerLinkActive="active"
+		   [routerLinkActiveOptions]="{ exact: true }">
+			Places
+		</a>
+	</li>
 </ul>

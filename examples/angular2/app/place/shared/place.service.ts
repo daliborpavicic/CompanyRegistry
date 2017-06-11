@@ -1,9 +1,20 @@
 import { Injectable } from '@angular/core';
+import {Subject} from "rxjs/Subject";
 
 @Injectable() // this isn't required, but it's a good practice when service injects other services as it's deps
 export class PlaceService {
     getPlaces() {
-        return PLACES;
+        const subject = new Subject();
+        setTimeout(() => {
+            subject.next(PLACES);
+            subject.complete();
+        }, 100);
+
+        return subject;
+    }
+
+    getPlace(id:string) {
+        return PLACES.find(place => place.id === id);
     }
 }
 
