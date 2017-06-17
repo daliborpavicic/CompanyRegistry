@@ -2,6 +2,7 @@
 import {Component} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {PlaceService} from "../shared/place.service";
+import {IPlace} from "../shared/place.model";
 
 @Component({
     // we don't need a selector since component is going to be used
@@ -9,7 +10,7 @@ import {PlaceService} from "../shared/place.service";
     templateUrl: '/app/place/place-details/place-details.component.html'
 })
 export class PlaceDetailsComponent {
-    place:any;
+    place:IPlace;
 
     constructor(
         private placeService:PlaceService,
