@@ -2,13 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {PlaceService} from "./shared/place.service";
 import {ToastrService} from "../common/toastr.service";
 import {ActivatedRoute} from "@angular/router";
+import {IPlace} from "./shared/place.model";
 
 @Component({
     selector: 'place-list',
     templateUrl: 'app/place/place-list.component.html'
 })
 export class PlaceListComponent implements OnInit {
-    places:any;
+    places:IPlace[];
     // shorthand for declaring placeService property and this.placeService = placeService
     constructor(
         private placeService: PlaceService,

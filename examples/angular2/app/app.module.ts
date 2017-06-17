@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {RouterModule} from "@angular/router";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {
     PlaceListComponent,
@@ -17,11 +18,16 @@ import { SideNavComponent } from './nav/side-nav.component';
 import { ToastrService } from './common/toastr.service';
 import {appRoutes} from "./routes";
 import {Error404Component} from "./errors/404.component";
+import {
+    CreateCompanyComponent
+} from "./company/index";
 
 @NgModule({
     imports: [
         BrowserModule,
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes),
+        FormsModule,
+        ReactiveFormsModule
     ],
     declarations: [ // todo: You need to declare components to be bootstrapped
         CompanyRegistryAppComponent,
@@ -30,7 +36,8 @@ import {Error404Component} from "./errors/404.component";
         SideNavComponent,
         PlaceDetailsComponent,
         CreatePlaceComponent,
-        Error404Component
+        Error404Component,
+        CreateCompanyComponent
     ],
     providers: [
         PlaceService,

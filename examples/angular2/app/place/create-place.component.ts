@@ -1,25 +1,26 @@
 import {Component} from "@angular/core";
 import {Router} from "@angular/router";
+import {PlaceService} from "./shared/place.service";
 
 @Component({
-    template: `
-        <h1>New place</h1>
-        <hr>
-        <div>
-            <h3>Create place form will go here</h3>
-            <br />
-            <br />
-            <button type="submit">Save</button>
-            <button type="button" (click)="cancel()">Cancel</button>
-        </div>
-    `
+    templateUrl: 'app/place/create-place.component.html'
 })
 export class CreatePlaceComponent {
     isDirty:boolean = true;
 
-    constructor(private router:Router) {
+    constructor(
+        private router:Router,
+        private placeService:PlaceService
+    ) {
 
     }
+
+    addPlace(formValues) {
+        console.log(formValues);
+        this.placeService.addPlace(formValues.zipCode, formValues.placeName);
+        this.router.navigate(['/places']);
+    }
+
     cancel() {
         this.router.navigate(['/places']);
     }
