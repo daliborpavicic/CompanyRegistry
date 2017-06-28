@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Inject} from '@angular/core';
 import {PlaceService} from "./shared/place.service";
-import {ToastrService} from "../common/toastr.service";
+import { TOASTR_TOKEN } from "../common/toastr.service";
 import {ActivatedRoute} from "@angular/router";
 import {IPlace} from "./shared/place.model";
 
@@ -13,7 +13,7 @@ export class PlaceListComponent implements OnInit {
     // shorthand for declaring placeService property and this.placeService = placeService
     constructor(
         private placeService: PlaceService,
-        private toastrService: ToastrService,
+        @Inject(TOASTR_TOKEN) private toastr,
         private route:ActivatedRoute
     ) {
         // this.places = placeService.getPlaces();
@@ -34,6 +34,6 @@ export class PlaceListComponent implements OnInit {
 
     handlePlaceClicked(placeName) {
         console.log('received:', placeName);
-        this.toastrService.success(placeName);
+        this.toastr.success(placeName);
     }
 }

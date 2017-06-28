@@ -23,4 +23,15 @@
 	<a [routerLink]="['/places/new']">
 		Add place
 	</a>
+	<!-- first modal -->
+	<button modal-trigger="helloModal">Open Hello</button>
+	<simple-modal closeOnBodyClick="true" elementId="helloModal" title="Hello">
+		<h1>Hello (closes on body click)</h1>
+	</simple-modal>
+
+	<!-- second modal -->
+	<button modal-trigger="worldModal">Open World</button>
+	<simple-modal elementId="worldModal" title="World">
+		<h1>World (doesn't close on body click)</h1>
+	</simple-modal>
 </div>
