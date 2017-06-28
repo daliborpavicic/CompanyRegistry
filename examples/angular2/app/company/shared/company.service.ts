@@ -6,6 +6,11 @@ export class CompanyService {
     getCompanies() {
         return COMPANIES;
     }
+
+    addCompany() {
+        const nextId = Math.max.apply(null, COMPANIES.map(c => c._id));
+        console.log('next id= ', nextId + 1);
+    }
 }
 
 const COMPANIES = [
