@@ -19,5 +19,5 @@ export const appRoutes:Routes = [
     { path: 'places/:id', component: PlaceDetailsComponent, canActivate: [PlaceRouteActivator] },
     { path: 'companies/new', component: CreateCompanyComponent },
     { path: '404', component: Error404Component },
-    { path: '', redirectTo: '/', pathMatch: 'full' }
+    { path: '**', redirectTo: '404', pathMatch: 'full' }
 ];

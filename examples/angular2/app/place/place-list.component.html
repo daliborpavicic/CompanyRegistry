@@ -1,28 +1,11 @@
 <div>
 	<h3>The list of places</h3>
-	<table>
-		<thead>
-		<tr>
-			<th>
-				Zip code
-			</th>
-			<th>
-				Name
-			</th>
-		</tr>
-		</thead>
-		<tbody>
-		<div *ngFor="let place of places" class="row">
-			<place-list-item
-					[place]="place"
-					(eventClick)="handlePlaceClicked($event)">
-			</place-list-item>
-		</div>
-		</tbody>
-	</table>
-	<a [routerLink]="['/places/new']">
-		Add place
-	</a>
+	<data-table [rowData]="places"
+	            [columns]="columns"
+	            (rowClick)="handlePlaceClicked($event)">
+	</data-table>
+	<a class="btn btn-primary" [routerLink]="['/places/new']">Add place </a>
+
 	<!-- first modal -->
 	<button modal-trigger="helloModal">Open Hello</button>
 	<simple-modal closeOnBodyClick="true" elementId="helloModal" title="Hello">

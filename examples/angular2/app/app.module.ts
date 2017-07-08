@@ -5,7 +5,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {
     PlaceListComponent,
-    PlaceListItemComponent,
     PlaceService,
     PlaceDetailsComponent,
     CreatePlaceComponent,
@@ -26,6 +25,7 @@ import {
     CreateCompanyComponent
 } from "./company/index";
 import {ModalTriggerDirective} from "./common/modalTrigger.directive";
+import {DataTableComponent} from "./data-table/data-table.component";
 
 // tell TypeScript compiler that we now about toastr
 declare let toastr: any;
@@ -34,14 +34,13 @@ declare let jQuery: any;
 @NgModule({
     imports: [
         BrowserModule,
-        RouterModule.forRoot(appRoutes),
+        RouterModule.forRoot(appRoutes, { useHash: true }),
         FormsModule,
         ReactiveFormsModule
     ],
     declarations: [ // todo: You need to declare components to be bootstrapped
         CompanyRegistryAppComponent,
         PlaceListComponent,
-        PlaceListItemComponent,
         SideNavComponent,
         PlaceDetailsComponent,
         CreatePlaceComponent,
@@ -49,6 +48,7 @@ declare let jQuery: any;
         CreateCompanyComponent,
         SimpleModalComponent,
         ModalTriggerDirective,
+        DataTableComponent,
     ],
     providers: [
         PlaceService,
