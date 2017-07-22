@@ -10,6 +10,6 @@ export class PlaceListResolver implements Resolve<any> {
     }
 
     resolve() {
-        return this.placeService.getPlaces().map(places => places);
+        return this.placeService.getPlaces();
     }
 }
