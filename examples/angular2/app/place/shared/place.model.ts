@@ -1,5 +1,5 @@
 export interface IPlace {
-    id: string,
-    zipCode: string,
+    _id: string,
+    postalCode: string,
     name: string
 }

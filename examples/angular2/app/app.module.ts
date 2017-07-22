@@ -1,14 +1,13 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule} from "@angular/router";
+import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {
     PlaceListComponent,
     PlaceService,
-    PlaceDetailsComponent,
-    CreatePlaceComponent,
-    PlaceRouteActivator,
+    PlaceComponent,
     PlaceListResolver
 } from './place/index';
 
@@ -26,6 +25,8 @@ import {
 } from "./company/index";
 import {ModalTriggerDirective} from "./common/modalTrigger.directive";
 import {DataTableComponent} from "./data-table/data-table.component";
+import {MongoLabService} from "./common/mongo-lab.service";
+import {PlaceResolver} from "./place/place-resolver.service";
 
 // tell TypeScript compiler that we now about toastr
 declare let toastr: any;
@@ -34,16 +35,16 @@ declare let jQuery: any;
 @NgModule({
     imports: [
         BrowserModule,
-        RouterModule.forRoot(appRoutes, { useHash: true }),
+        RouterModule.forRoot(appRoutes, {useHash: true}),
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        HttpModule
     ],
     declarations: [ // todo: You need to declare components to be bootstrapped
         CompanyRegistryAppComponent,
         PlaceListComponent,
         SideNavComponent,
-        PlaceDetailsComponent,
-        CreatePlaceComponent,
+        PlaceComponent,
         Error404Component,
         CreateCompanyComponent,
         SimpleModalComponent,
@@ -51,22 +52,23 @@ declare let jQuery: any;
         DataTableComponent,
     ],
     providers: [
+        MongoLabService,
         PlaceService,
-        { provide: TOASTR_TOKEN, useValue: toastr },
-        { provide: JQ_TOKEN, useValue: jQuery },
-        PlaceRouteActivator,
+        {provide: TOASTR_TOKEN, useValue: toastr},
+        {provide: JQ_TOKEN, useValue: jQuery},
         {
             provide: 'canDeactivateCreatePlace',
             useValue: checkDirtyState
         },
-        PlaceListResolver
+        PlaceListResolver,
+        PlaceResolver
     ],
     bootstrap: [CompanyRegistryAppComponent]
 })
 export class AppModule {
 }
 
-function checkDirtyState(component: CreatePlaceComponent) {
+function checkDirtyState(component: PlaceComponent) {
     if (component.isDirty) {
         return window.confirm('You have not saved this place, do you really want to cancel ?');
     }
