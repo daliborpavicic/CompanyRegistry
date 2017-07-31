@@ -1,42 +1,50 @@
 <!-- Template based form -->
-<h1>New place</h1>
+<h3>New place</h3>
 <hr>
-<div>
-	<form #placeForm="ngForm"
-	      (ngSubmit)="savePlace(placeForm.value)"
-	      autocomplete="off"
-	      novalidate>
-		<div>
-			<label for="postalCode">Zip Code:</label>
-			<em *ngIf="placeForm.controls.postalCode?.invalid &&
+<form #placeForm="ngForm"
+      (ngSubmit)="savePlace(placeForm.value)"
+      autocomplete="off"
+      class="form-horizontal"
+      novalidate>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="postalCode">Zip Code:</label>
+    <div class="col-sm-6 col-md-4">
+      <em *ngIf="placeForm.controls.postalCode?.invalid &&
 				(placeForm.controls.postalCode?.touched || mouseoverSave)">Required</em>
-			<br/>
-			<input [ngModel]="place.postalCode"
-			       (ngModelChange)="place.postalCode = $event"
-			       name="postalCode"
-			       required
-			       id="postalCode"
-			       type="text"
-			       placeholder="Zip Code..." />
-		</div>
-		<div>
-			<label for="name">Name:</label>
-			<em *ngIf="placeForm.controls.name?.invalid &&
+      <br />
+      <input [ngModel]="place.postalCode"
+             (ngModelChange)="place.postalCode = $event"
+             name="postalCode"
+             required
+             id="postalCode"
+             type="text"
+             class="form-control"
+             placeholder="Zip Code..." />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="name">Name:</label>
+    <em *ngIf="placeForm.controls.name?.invalid &&
 				(placeForm.controls.name?.touched || mouseoverSave)">Required</em>
-			<br/>
-			<input [ngModel]="place.name"
-			       (ngModelChange)="place.name = $event"
-			       name="name"
-			       required
-			       id="name"
-			       type="text"
-			       placeholder="Place Name..." />
-		</div>
-		<br />
-		<span (mouseenter)="mouseoverSave=true" (mouseleave)="mouseoverSave=false">
-			<button type="submit" [disabled]="placeForm.invalid">Save</button>
-		</span>
-		<button type="button" (click)="deletePlace()">Delete</button>
-		<button type="button" (click)="cancel()">Cancel</button>
-	</form>
-</div>
+    <div class="col-sm-6 col-md-4">
+      <input [ngModel]="place.name"
+             (ngModelChange)="place.name = $event"
+             name="name"
+             required
+             id="name"
+             type="text"
+             class="form-control"
+             placeholder="Place Name..." />
+    </div>
+  </div>
+  <div class="col-sm-offset-2">
+      <span (mouseenter)="mouseoverSave=true" (mouseleave)="mouseoverSave=false">
+        <button type="submit" class="btn btn-primary" [disabled]="placeForm.invalid">Save</button>
+      </span>
+    <button type="button" class="btn btn-danger" (click)="deletePlace()">Delete</button>
+    <button type="button" class="btn btn-default" (click)="cancel()">
+      <i class="fa fa-chevron-left"></i> Cancel
+    </button>
+  </div>
+</form>
+
