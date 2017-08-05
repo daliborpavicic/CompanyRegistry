@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
 import {IPlace} from './shared/place.model';
 
 @Component({
@@ -7,10 +8,11 @@ import {IPlace} from './shared/place.model';
     templateUrl: './place-list.component.html'
 })
 export class PlaceListComponent implements OnInit {
-    places: IPlace[] = [];
+    places: Observable<IPlace[]> = new Observable((observer) => observer.next([]));
     columns;
 
     constructor(private router: Router, private route: ActivatedRoute) {
+      this.places = route.data.map(value => value.places);
     }
 
     ngOnInit() {
@@ -18,8 +20,6 @@ export class PlaceListComponent implements OnInit {
             {key: 'postalCode', name: 'Postal Code'},
             {key: 'name', name: 'Name'},
         ];
-
-        this.places = this.route.snapshot.data['places'];
     }
 
     handlePlaceClicked(place: IPlace) {
