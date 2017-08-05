@@ -15,11 +15,7 @@ import {Router} from '@angular/router';
         }
     `]
 })
-// {"_id": "000",
-// "pib": "000",
-// "name":"Univer Export",
-// "phoneNumber":"021/666-888",
-// "email":"univer@gmail.com"},
+
 export class CreateCompanyComponent implements OnInit {
     companyForm: FormGroup;
     vatNumber: FormControl;

@@ -33,6 +33,10 @@ export class PlaceService {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers});
 
+        if(!place._id) {
+          place._id = place.postalCode;
+        }
+
         return this.http.post(url, JSON.stringify(place), options)
             .map((response: Response) => {
                 return response.json();
@@ -55,8 +59,8 @@ export class PlaceService {
     deletePlace(id) {
         const url = this.mongoLab.getUrlForEntity(collectionName, id);
 
-        this.http.delete(url).map((response: Response) => {
-            console.log(response.json());
-        }).subscribe(); // self-subscription to trigger the request when method is called
+        return this.http.delete(url).map((response: Response) => {
+            return response.json();
+        });
     }
 }

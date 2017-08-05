@@ -27,6 +27,7 @@ import {ModalTriggerDirective} from './common/modalTrigger.directive';
 import {DataTableComponent} from './data-table/data-table.component';
 import {MongoLabService} from './common/mongo-lab.service';
 import {PlaceResolver} from './place/place-resolver.service';
+import {HomeComponent} from './core/home.component';
 
 // tell TypeScript compiler that we now about toastr
 export declare let toastr: any;
@@ -40,8 +41,9 @@ export declare let jQuery: any;
         ReactiveFormsModule,
         HttpModule
     ],
-    declarations: [ // todo: You need to declare components to be bootstrapped
+    declarations: [
         CompanyRegistryAppComponent,
+        HomeComponent,
         PlaceListComponent,
         SideNavComponent,
         PlaceComponent,
@@ -56,23 +58,11 @@ export declare let jQuery: any;
         PlaceService,
         {provide: TOASTR_TOKEN, useValue: toastr},
         {provide: JQ_TOKEN, useValue: jQuery},
-        {
-            provide: 'canDeactivateCreatePlace',
-            useValue: checkDirtyState
-        },
         PlaceListResolver,
         PlaceResolver
     ],
     bootstrap: [CompanyRegistryAppComponent]
 })
 export class AppModule {
-}
-
-export function checkDirtyState(component: PlaceComponent) {
-    if (component.isDirty) {
-        return window.confirm('You have not saved this place, do you really want to cancel ?');
-    }
-
-    return false;
 }
 
