@@ -43,7 +43,9 @@ export class CreateCompanyComponent implements OnInit {
     // Custom validator
     private restrictedWords(words: string[]) {
         return (control: FormControl): {[key: string]: any} => {
-            if (!words) return null;
+            if (!words) {
+              return null;
+            }
 
             const invalidWords = words
                 .map(word => control.value.includes(word) ? word : null)

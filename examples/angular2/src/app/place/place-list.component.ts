@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
 import {IPlace} from './shared/place.model';
 
 @Component({
@@ -8,7 +7,7 @@ import {IPlace} from './shared/place.model';
     templateUrl: './place-list.component.html'
 })
 export class PlaceListComponent implements OnInit {
-    places: Observable<IPlace[]> = new Observable((observer) => observer.next([]));
+    places;
     columns;
 
     constructor(private router: Router, private route: ActivatedRoute) {

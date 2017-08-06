@@ -1,0 +1,10 @@
+<div>
+  <h3>Companies</h3>
+  <hr>
+  <data-table [rowData]="companies"
+              [columns]="columns"
+              (rowClick)="handleCompanyClicked($event)">
+  </data-table>
+  <hr>
+  <a class="btn btn-primary" [routerLink]="['/places/new']">Add company</a>
+</div>

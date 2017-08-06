@@ -16,6 +16,7 @@ const dataModel = {
 export class PlaceComponent {
   place: IPlace;
   model: any;
+  isEdit: boolean;
 
   placeForm: FormGroup;
 
@@ -24,6 +25,7 @@ export class PlaceComponent {
               private placeService: PlaceService,
               public fb: FormBuilder,
               @Inject(TOASTR_TOKEN) private toastr) {
+    this.isEdit = false;
   }
 
   ngOnInit() {
@@ -38,6 +40,7 @@ export class PlaceComponent {
       const placeFromRoute = data['place'];
 
       if (placeFromRoute._id) {
+        this.isEdit = true;
         this.patchValues(placeFromRoute);
       }
 

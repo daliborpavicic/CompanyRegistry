@@ -1,4 +1,6 @@
-<h3>New place</h3>
+<h3>
+  {{isEdit ? 'Edit place ' + place.name : 'Add place'}}
+</h3>
 <hr>
 <form [formGroup]="placeForm"
       (ngSubmit)="submitPlace(placeForm)"
@@ -34,8 +36,9 @@
       Revert
     </button>
     <button type="button" class="btn btn-danger"
+            modalTrigger="deletePlace"
             [disabled]= "!place._id"
-            (click)="deletePlace()">
+            (click)="null">
       Delete
     </button>
     <button type="button" class="btn btn-default"
@@ -44,4 +47,9 @@
     </button>
   </div>
 </form>
+<simple-modal elementId="deletePlace"
+              (onConfirm)="deletePlace()"
+              title="Delete place">
+  Are you sure you want to delete {{place.name}} ?
+</simple-modal>
 
