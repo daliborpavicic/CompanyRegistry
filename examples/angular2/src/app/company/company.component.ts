@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
-    templateUrl: './create-company.component.html',
+    templateUrl: './company.component.html',
     styles: [`
         em {
             color: #E05C65;
@@ -16,7 +16,7 @@ import {Router} from '@angular/router';
     `]
 })
 
-export class CreateCompanyComponent implements OnInit {
+export class CompanyComponent implements OnInit {
     companyForm: FormGroup;
     vatNumber: FormControl;
     companyName: FormControl;

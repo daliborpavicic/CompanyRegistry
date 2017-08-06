@@ -5,35 +5,37 @@ import {HttpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {
+  DataTableComponent,
+  SimpleModalComponent,
+  ModalTriggerDirective,
+  MongoLabService,
+  TOASTR_TOKEN,
+  JQ_TOKEN,
+} from './common/index';
+
+import {
+  HomeComponent,
+  SideNavComponent
+} from './core/index';
+
+import {
   PlaceListComponent,
   PlaceService,
   PlaceComponent,
-  PlaceListResolver
+  PlaceListResolver,
+  PlaceResolver
 } from './place/index';
 
 import {
   CompanyListComponent,
   CompanyService,
-  CompanyListResolver
+  CompanyListResolver,
+  CompanyComponent
 } from './company';
 
-import {CompanyRegistryAppComponent} from './app.component';
-import {SideNavComponent} from './nav/side-nav.component';
-import {
-  TOASTR_TOKEN,
-  JQ_TOKEN,
-  SimpleModalComponent
-} from './common/index';
-import {appRoutes} from './routes';
 import {Error404Component} from './errors/404.component';
-import {
-  CreateCompanyComponent
-} from './company/index';
-import {ModalTriggerDirective} from './common/modalTrigger.directive';
-import {DataTableComponent} from './data-table/data-table.component';
-import {MongoLabService} from './common/mongo-lab.service';
-import {PlaceResolver} from './place/place-resolver.service';
-import {HomeComponent} from './core/home.component';
+import {appRoutes} from './routes';
+import {CompanyRegistryAppComponent} from './app.component';
 
 // tell TypeScript compiler that we now about toastr
 export declare let toastr: any;
@@ -54,7 +56,7 @@ export declare let jQuery: any;
     SideNavComponent,
     PlaceComponent,
     Error404Component,
-    CreateCompanyComponent,
+    CompanyComponent,
     SimpleModalComponent,
     ModalTriggerDirective,
     DataTableComponent,
