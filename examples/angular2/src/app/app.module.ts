@@ -30,7 +30,8 @@ import {
   CompanyListComponent,
   CompanyService,
   CompanyListResolver,
-  CompanyComponent
+  CompanyComponent,
+  CompanyResolver
 } from './company';
 
 import {Error404Component} from './errors/404.component';
@@ -69,6 +70,7 @@ export declare let jQuery: any;
     PlaceResolver,
     CompanyService,
     CompanyListResolver,
+    CompanyResolver,
     {provide: TOASTR_TOKEN, useValue: toastr},
     {provide: JQ_TOKEN, useValue: jQuery},
   ],
