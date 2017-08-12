@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
-import {PlaceService} from './shared/place.service';
 import 'rxjs/add/operator/map';
+import {PlaceService} from './shared/place.service';
 
 @Injectable()
 export class PlaceResolver implements Resolve<any> {
-    constructor(private placeService: PlaceService) {
-
-    }
+    constructor(private placeService: PlaceService) {}
 
     resolve(route: ActivatedRouteSnapshot) {
         const placeId = route.params['id'];
@@ -16,10 +14,6 @@ export class PlaceResolver implements Resolve<any> {
             return this.placeService.getPlace(placeId);
         }
 
-        return {
-            _id: '',
-            postalCode: '',
-            name: '',
-        };
+        return PlaceService.getEmptyPlace();
     }
 }

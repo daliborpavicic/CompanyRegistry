@@ -1,97 +1,86 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, Inject, OnInit} from '@angular/core';
+import {Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ICompany} from './shared/company.model';
+import {CompanyService} from './shared/company.service';
+import {FormService} from '../common/form/form.service';
+import {TOASTR_TOKEN} from '../common/toastr.service';
+import {restrictedWordsValidator} from '../common/index';
+import {EntityFormComponent} from '../common/entity-form-component.model';
 
 @Component({
   templateUrl: './company.component.html',
-  styles: [`
-    em {
-      color: #E05C65;
-      padding-left: 10px
-    }
-
-    .error input {
-      background-color: #E3C3C5;
-    }
-  `]
 })
-
-export class CompanyComponent implements OnInit {
-  company: any;
-  isEdit: boolean;
-  companyForm: FormGroup;
-  vatNumber: FormControl;
-  companyName: FormControl;
+export class CompanyComponent implements OnInit, EntityFormComponent {
+  model: any;
 
   constructor(private router: Router,
-              private route: ActivatedRoute) {
-    this.isEdit = false;
+              private route: ActivatedRoute,
+              public formService: FormService,
+              private companyService: CompanyService,
+              @Inject(TOASTR_TOKEN) private toastr) {
+    this.formService.setIsEdit(false);
   }
 
   ngOnInit() {
-    this.vatNumber = new FormControl('111', [
-      Validators.required,
-      Validators.pattern('[0-9].*')
-    ]);
-    this.companyName = new FormControl('Naovis', [
-      Validators.required,
-      this.restrictedWords(['foo', 'bar'])
-    ]);
-
-    this.companyForm = new FormGroup({
-      vatNumber: this.vatNumber,
-      companyName: this.companyName
-    });
+    this.model = {
+      formName: 'company',
+      fields: [
+        {
+          id: 'pib',
+          name: 'pib',
+          label: 'PIB',
+          validators: [Validators.required]
+        },
+        {
+          id: 'name',
+          name: 'name',
+          label: 'Name',
+          validators: [
+            Validators.required,
+            restrictedWordsValidator(['FTN', 'University'])
+          ]
+        },
+        {
+          id: 'phoneNumber',
+          name: 'phoneNumber',
+          label: 'Phone Number',
+          validators: [Validators.required]
+        },
+        {
+          id: 'email',
+          name: 'email',
+          label: 'Email',
+          validators: [Validators.required, Validators.email]
+        }
+      ],
+    };
+    this.formService.initializeFormGroup(this.model);
 
     this.route.data.forEach((data) => {
       const companyFromRoute = data['company'];
 
-      if (companyFromRoute._id) {
-        this.isEdit = true;
-        // this.patchValues(placeFromRoute);
-      }
-
-      this.company = JSON.stringify(companyFromRoute);
+      this.formService.updateEntityData(companyFromRoute);
     });
   }
 
-  // Custom validator
-  private restrictedWords(words: string[]) {
-    return (control: FormControl): { [key: string]: any } => {
-      if (!words) {
-        return null;
-      }
+  submitEntity() {
+    const dataForSubmit = this.formService.getEntityForSubmit();
 
-      const invalidWords = words
-        .map(word => control.value.includes(word) ? word : null)
-        .filter(word => word != null);
-
-      return invalidWords && invalidWords.length > 0
-        ? {'restrictedWords': invalidWords.join(', ')}
-        : null;
-    };
-  }
-
-  saveCompany(formValues) {
-    if (this.companyForm.valid) {
-      console.log(formValues);
+    if (dataForSubmit._id) {
+      this.companyService.updateCompany(dataForSubmit)
+        .subscribe(() => this.cancel());
     } else {
-      console.log('invalid company form');
+      this.companyService.createCompany(dataForSubmit)
+        .subscribe(() => this.cancel());
     }
   }
 
-  validateVatNumber() {
-    return this.vatNumber.valid &&
-      this.vatNumber.untouched;
-  }
-
-  validateCompanyName() {
-    return this.companyName.valid &&
-      this.companyName.untouched;
+  deleteEntity() {
+    this.companyService.deleteCompany(this.formService.getOriginalEntity()._id)
+      .subscribe(() => this.cancel());
   }
 
   cancel() {
-    this.router.navigate(['/places']);
+    this.router.navigate(['/companies']);
   }
 }

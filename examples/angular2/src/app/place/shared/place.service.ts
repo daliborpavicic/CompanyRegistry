@@ -1,66 +1,45 @@
-import {Inject, Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {IPlace} from './place.model';
 import {MongoLabService} from '../../common/mongo-lab.service';
 
 const collectionName = 'places';
 
-@Injectable() // this isn't required, but it's a good practice when service injects other services as it's deps
+@Injectable()
 export class PlaceService {
 
-  constructor(private http: Http,
-              private mongoLab: MongoLabService) {
+  constructor(private mongoLab: MongoLabService) {
   }
 
-  // just calling getEvents will not trigger an HTTP request if nobody's subscribed
-  getPlaces(): Observable<IPlace[]> {
-    const url = this.mongoLab.getUrlForCollection(collectionName);
+  static getEmptyPlace(): IPlace {
+    return {
+      _id: '',
+      postalCode: '',
+      name: '',
+    };
+  }
 
-    return this.http.get(url)
-      .map((response: Response) => <IPlace[]>response.json());
+  getPlaces(): Observable<IPlace[]> {
+    return this.mongoLab.getEntities(collectionName);
   }
 
   getPlace(id: string): Observable<IPlace> {
-    const url = this.mongoLab.getUrlForEntity(collectionName, id);
-
-    return this.http.get(url)
-      .map((response: Response) => <IPlace>response.json());
+    return this.mongoLab.getEntity(collectionName, id);
   }
 
-  createPlace(place: IPlace): Observable<IPlace> {
-    const url = this.mongoLab.getUrlForCollection(collectionName);
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers});
-
+  createPlace(place): Observable<IPlace> {
     if (!place._id) {
       place._id = place.postalCode;
     }
 
-    return this.http.post(url, JSON.stringify(place), options)
-      .map((response: Response) => {
-        return response.json();
-      });
+    return this.mongoLab.createEntity(collectionName, place);
   }
 
-  updatePlace(place: IPlace): Observable<IPlace> {
-    const url = this.mongoLab.getUrlForEntity(collectionName, place._id);
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers});
-
-    delete place._id; // do not override an existing _id in mongoLab
-
-    return this.http.put(url, JSON.stringify(place), options)
-      .map((response: Response) => {
-        return response.json();
-      });
+  updatePlace(place): Observable<IPlace> {
+    return this.mongoLab.updateEntity(collectionName, place);
   }
 
   deletePlace(id) {
-    const url = this.mongoLab.getUrlForEntity(collectionName, id);
-
-    return this.http.delete(url).map((response: Response) => {
-      return response.json();
-    });
+    return this.mongoLab.deleteEntity(collectionName, id);
   }
 }

@@ -16,6 +16,6 @@ export class CompanyResolver implements Resolve<any> {
       return this.companyService.getCompany(companyId);
     }
 
-    return this.companyService.getEmptyCompany();
+    return CompanyService.getEmptyCompany();
   }
 }

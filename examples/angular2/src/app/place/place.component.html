@@ -1,44 +1,43 @@
 <h3>
-  {{isEdit ? 'Edit place ' + place.name : 'Add place'}}
+  {{
+  formService.isEdit
+  ? 'Edit ' + model.formName + ' ' + formService.getOriginalEntity().name
+  : 'Add ' + model.formName
+  }}
 </h3>
 <hr>
-<form [formGroup]="placeForm"
-      (ngSubmit)="submitPlace(placeForm)"
+<form [formGroup]="formService.getForm()"
+      (ngSubmit)="submitEntity()"
       autocomplete="off"
       class="form-horizontal"
       novalidate>
-  <div [ngClass]="getControlClass(model.postalCode)">
-    <label class="control-label col-sm-2" for="postalCode">Postal Code:</label>
+  <div *ngFor="let fieldModel of model.fields"
+       [ngClass]="formService.getControlClass(fieldModel.name)">
+    <label class="control-label col-sm-2" for="{{fieldModel.id}}">
+      {{fieldModel.label}}
+    </label>
     <div class="col-sm-6 col-md-4">
-      <input [formControlName]="model.postalCode"
-             id="postalCode"
+      <input [formControlName]="fieldModel.name"
+             id="{{fieldModel.id}}"
              class="form-control"
-             placeholder="Zip Code..." />
-      <div class='help-block' *ngIf="shouldDisplayError(model.postalCode)">Required</div>
-    </div>
-  </div>
-  <div [ngClass]="getControlClass(model.placeName)">
-    <label class="control-label col-sm-2" for="name">Name:</label>
-    <div class="col-sm-6 col-md-4">
-      <input [formControlName]="model.placeName"
-             id="name"
-             class="form-control"
-             placeholder="Place Name..." />
-      <div class='help-block' *ngIf="shouldDisplayError(model.placeName)">Required</div>
+             placeholder="{{fieldModel.label}}..." />
+      <div class='help-block' *ngIf="formService.shouldDisplayError(fieldModel.name)">
+        {{formService.getErrorMessageForControl(fieldModel.name)}}
+      </div>
     </div>
   </div>
   <div class="col-sm-offset-2">
-    <button type="submit" class="btn btn-primary" [disabled]="placeForm.invalid">
+    <button type="submit" class="btn btn-primary"
+            [disabled]="formService.getForm().invalid">
       Save
     </button>
     <button type="button" class="btn btn-warning"
-            (click)="revertChanges()">
+            (click)="formService.revertChangesOnEntity()">
       Revert
     </button>
     <button type="button" class="btn btn-danger"
-            modalTrigger="deletePlace"
-            [disabled]= "!place._id"
-            (click)="null">
+            *ngIf="formService.isEdit"
+            modalTrigger="deletePlace">
       Delete
     </button>
     <button type="button" class="btn btn-default"
@@ -48,8 +47,8 @@
   </div>
 </form>
 <simple-modal elementId="deletePlace"
-              (onConfirm)="deletePlace()"
+              (onConfirm)="deleteEntity()"
               title="Delete place">
-  Are you sure you want to delete {{place.name}} ?
+  Are you sure you want to delete {{formService.getOriginalEntity().name}} ?
 </simple-modal>
 
