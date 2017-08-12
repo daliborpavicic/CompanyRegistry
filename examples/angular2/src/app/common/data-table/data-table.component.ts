@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
   selector: 'data-table',
   templateUrl: './data-table.component.html'
 })
+// TODO: Add pagination and handle empty cells
 export class DataTableComponent implements OnInit {
   @Input() rowData: Observable<Array<any>>;
 
