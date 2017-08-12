@@ -1,35 +1,54 @@
-<!--<form [formGroup]="companyForm"-->
-      <!--(ngSubmit)="saveCompany(companyForm.value)"-->
-      <!--autocomplete="off"-->
-      <!--novalidate>-->
-	<!--<div [ngClass]="{'error': !validateVatNumber() }">-->
-		<!--<label for="vatNumber">VAT number</label>-->
-		<!--<em *ngIf="!validateVatNumber() &&-->
-			<!--vatNumber.errors.required">Required</em>-->
-		<!--<em *ngIf="!validateVatNumber() &&-->
-			<!--vatNumber.errors.pattern">Must start with number</em>-->
-		<!--<br />-->
-		<!--<input formControlName="vatNumber"-->
-		       <!--id="vatNumber"-->
-		       <!--type="text"-->
-		       <!--placeholder="VAT number..." />-->
-	<!--</div>-->
-	<!--<div [ngClass]="{'error': !validateCompanyName() }">-->
-		<!--<label for="companyName">Company name</label>-->
-		<!--<em *ngIf="!validateCompanyName() &&-->
-			<!--companyName.errors.required">Required</em>-->
-		<!--<em *ngIf="!validateCompanyName() && companyName.errors.restrictedWords">-->
-			<!--Restricted words found: {{companyName.errors.restrictedWords}}-->
-		<!--</em>-->
-		<!--<br />-->
-		<!--<input formControlName="companyName"-->
-		       <!--id="companyName"-->
-		       <!--type="text"-->
-		       <!--placeholder="Company name..." />-->
-	<!--</div>-->
-	<!--<br />-->
+<h3>
+  {{
+  formService.isEdit
+  ? 'Edit ' + model.formName + ' ' + formService.getOriginalEntity().name
+  : 'Add ' + model.formName
+  }}
+</h3>
+<hr>
+<form [formGroup]="formService.getForm()"
+      (ngSubmit)="submitEntity()"
+      autocomplete="off"
+      class="form-horizontal"
+      novalidate>
+  <div *ngFor="let fieldModel of model.fields"
+       [ngClass]="formService.getControlClass(fieldModel.name)">
+    <label class="control-label col-sm-2" for="{{fieldModel.id}}">
+      {{fieldModel.label}}
+    </label>
+    <div class="col-sm-6 col-md-4">
+      <input [formControlName]="fieldModel.name"
+             id="{{fieldModel.id}}"
+             class="form-control"
+             placeholder="{{fieldModel.label}}..." />
+      <div class='help-block' *ngIf="formService.shouldDisplayError(fieldModel.name)">
+        {{formService.getErrorMessageForControl(fieldModel.name)}}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-offset-2">
+    <button type="submit" class="btn btn-primary"
+            [disabled]="formService.getForm().invalid">
+      Save
+    </button>
+    <button type="button" class="btn btn-warning"
+            (click)="formService.revertChangesOnEntity()">
+      Revert
+    </button>
+    <button type="button" class="btn btn-danger"
+            *ngIf="formService.isEdit"
+            modalTrigger="deleteCompany">
+      Delete
+    </button>
+    <button type="button" class="btn btn-default"
+            (click)="cancel()">
+      <i class="fa fa-chevron-left"></i> Cancel
+    </button>
+  </div>
+</form>
+<simple-modal elementId="deleteCompany"
+              (onConfirm)="deleteEntity()"
+              title="Delete">
+  Are you sure you want to delete {{formService.getOriginalEntity().name}} ?
+</simple-modal>
 
-	<!--<button type="submit">Save</button>-->
-	<!--<button type="button" (click)="cancel()">Cancel</button>-->
-<!--</form>-->
-<span>{{company}}</span>

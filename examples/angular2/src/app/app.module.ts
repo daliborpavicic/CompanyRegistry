@@ -9,6 +9,7 @@ import {
   SimpleModalComponent,
   ModalTriggerDirective,
   MongoLabService,
+  FormService,
   TOASTR_TOKEN,
   JQ_TOKEN,
 } from './common/index';
@@ -65,6 +66,7 @@ export declare let jQuery: any;
   ],
   providers: [
     MongoLabService,
+    FormService,
     PlaceService,
     PlaceListResolver,
     PlaceResolver,
