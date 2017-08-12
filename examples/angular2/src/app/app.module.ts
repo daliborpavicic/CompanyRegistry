@@ -33,7 +33,15 @@ import {
   CompanyListResolver,
   CompanyComponent,
   CompanyResolver
-} from './company';
+} from './company/index';
+
+import {
+  EmployeeListComponent,
+  EmployeeService,
+  EmployeeListResolver,
+  EmployeeComponent,
+  EmployeeResolver
+} from './empolyee/index';
 
 import {Error404Component} from './errors/404.component';
 import {appRoutes} from './routes';
@@ -54,15 +62,17 @@ export declare let jQuery: any;
   declarations: [
     CompanyRegistryAppComponent,
     HomeComponent,
-    PlaceListComponent,
     SideNavComponent,
-    PlaceComponent,
     Error404Component,
-    CompanyComponent,
     SimpleModalComponent,
     ModalTriggerDirective,
     DataTableComponent,
+    PlaceListComponent,
+    PlaceComponent,
     CompanyListComponent,
+    CompanyComponent,
+    EmployeeListComponent,
+    EmployeeComponent,
   ],
   providers: [
     MongoLabService,
@@ -73,6 +83,9 @@ export declare let jQuery: any;
     CompanyService,
     CompanyListResolver,
     CompanyResolver,
+    EmployeeService,
+    EmployeeListResolver,
+    EmployeeResolver,
     {provide: TOASTR_TOKEN, useValue: toastr},
     {provide: JQ_TOKEN, useValue: jQuery},
   ],

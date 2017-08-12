@@ -1,0 +1,8 @@
+<h3>Employees</h3>
+<hr>
+<data-table [rowData]="employees"
+            [columns]="columns"
+            (rowClick)="handleEmployeeClicked($event)">
+</data-table>
+<hr>
+<a class="btn btn-primary" [routerLink]="['/employees/new']">Add employee</a>
