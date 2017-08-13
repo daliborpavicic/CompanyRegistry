@@ -40,6 +40,7 @@ export class PlaceService {
   }
 
   deletePlace(id) {
+    // TODO: Do not allow deletion if place is referecend by other entities
     return this.mongoLab.deleteEntity(collectionName, id);
   }
 }

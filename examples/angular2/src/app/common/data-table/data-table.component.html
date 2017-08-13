@@ -17,10 +17,25 @@
 	</tr>
 	</thead>
 	<tbody>
-	<tr class="active" *ngFor="let row of visibleRows" (click)="handleRowClick(row)">
+	<tr class="active" *ngFor="let row of getVisibleRows()" (click)="handleRowClick(row)">
 		<td *ngFor="let column of columns">
 			{{row[column.key]}}
 		</td>
 	</tr>
 	</tbody>
 </table>
+<ul class="pagination">
+  <li [class.disabled]="isFirstPage()">
+    <a class="link" aria-label="Previous" (click)="changePage(pagination.currentPage - 1)">
+      <span aria-hidden="true">&laquo;</span>
+    </a>
+  </li>
+  <li *ngFor="let page of getPages(); let i = index" [class.active]="(i + 1) === pagination.currentPage">
+    <a class="link" (click)="changePage(i+1)">{{i+1}}</a>
+  </li>
+  <li [class.disabled]="isLastPage()">
+    <a class="link" aria-label="Next" (click)="changePage(pagination.currentPage + 1)">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+  </li>
+</ul>

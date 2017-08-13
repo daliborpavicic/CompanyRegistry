@@ -1,18 +1,18 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import {IColumn} from './column.model';
 
 @Component({
   selector: 'data-table',
   templateUrl: './data-table.component.html'
 })
-// TODO: Add pagination and handle empty cells
+
 export class DataTableComponent implements OnInit {
   @Input() rowData: Observable<Array<any>>;
 
   sourceRows: Array<object> = [];
-  visibleRows: Array<object> = [];
 
-  @Input() columns: Array<Object> = [];
+  @Input() columns: Array<IColumn> = [];
   @Output() rowClick = new EventEmitter();
 
   filters = {};
@@ -21,11 +21,15 @@ export class DataTableComponent implements OnInit {
     sortDirection: ''
   };
 
+  pagination = {
+    currentPage: 1,
+    pageSize: 5
+  };
+
 
   ngOnInit() {
     this.rowData.subscribe(value => {
       this.sourceRows = value.slice();
-      this.visibleRows = this.sourceRows.slice();
     });
   }
 
@@ -34,11 +38,9 @@ export class DataTableComponent implements OnInit {
     const columnKey = element.name;
 
     this.filters[columnKey] = element.value.toLocaleLowerCase();
-    this.visibleRows = filterRows(this.sourceRows, this.filters);
   }
 
   handleHeaderClick(columnKey) {
-    const {visibleRows} = this;
     const {sortColumn, sortDirection} = this.sort;
 
     if (sortColumn !== columnKey) {
@@ -49,8 +51,42 @@ export class DataTableComponent implements OnInit {
     } else {
       this.sort.sortDirection = sortDirection === '+' ? '-' : '+';
     }
+  }
 
-    this.visibleRows = sortRows(visibleRows, this.sort.sortColumn, this.sort.sortDirection);
+  getFilteredAndSortedRows() {
+    return sortRows(
+      filterRows(this.sourceRows, this.filters),
+      this.sort.sortColumn,
+      this.sort.sortDirection
+    );
+  }
+
+  getPagesCount() {
+    return Math.ceil(this.getFilteredAndSortedRows().length / this.pagination.pageSize);
+  }
+
+  getPages() {
+    return new Array(this.getPagesCount());
+  }
+
+  changePage(page: number) {
+    const shouldChangePage = this.pagination.currentPage !== page
+      && page > 0
+      && page <= this.getPagesCount();
+
+    if (shouldChangePage) {
+      this.pagination.currentPage = page;
+    }
+  }
+
+  getVisibleRows() {
+    const filteredAndSortedRows = this.getFilteredAndSortedRows();
+    const rowsCount = filteredAndSortedRows.length;
+    const {pagination: {currentPage, pageSize}} = this;
+    const startIndex = Math.max(0, currentPage - 1) * pageSize;
+    const endIndex = Math.min(currentPage * pageSize, rowsCount);
+
+    return filteredAndSortedRows.slice(startIndex, endIndex);
   }
 
   handleRowClick(row) {
@@ -67,6 +103,14 @@ export class DataTableComponent implements OnInit {
       'fa-sort-asc': isSortedByColumn && sortDirection === '+',
     };
   }
+
+  isFirstPage() {
+    return this.pagination.currentPage === 1;
+  }
+
+  isLastPage() {
+    return this.sourceRows.length <= this.pagination.currentPage * this.pagination.pageSize;
+  }
 }
 
 function filterRows(rows, filters) {
@@ -75,11 +119,20 @@ function filterRows(rows, filters) {
 
     for (const columnKey in filters) {
       if (filters.hasOwnProperty(columnKey)) {
-        const columnFilter = filters[columnKey];
+        const filterTerm = filters[columnKey];
         const cellValue = row[columnKey];
+        const hasFilterTerm = !!filterTerm;
+        const hasCellValue = !!cellValue;
 
-        if (!!columnFilter && cellValue.toString().toLocaleLowerCase().indexOf(columnFilter) === -1) {
-          includeRow = false;
+        if (hasFilterTerm) {
+          if (hasCellValue) {
+            includeRow = cellValue.toString().toLocaleLowerCase().indexOf(filterTerm) !== -1;
+          } else {
+            includeRow = false;
+          }
+        }
+
+        if (!includeRow) {
           break;
         }
       }
