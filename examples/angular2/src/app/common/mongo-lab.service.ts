@@ -6,12 +6,28 @@ const API_KEY = 'ibGX1jtg9reXu0NcrrLwLuv5jpiUULnw';
 
 @Injectable() // this isn't required, but it's a good practice when service injects other services as it's deps
 export class MongoLabService {
+  static collections = {
+    PLACES: 'places',
+    EMPLOYEES: 'employees',
+    COMPANIES: 'companies'
+  };
+
   constructor(private http: Http) {
   }
 
   // just calling getEntities will not trigger an HTTP request if nobody's subscribed
   getEntities(collectionName: string) {
     return this.http.get(getUrlForCollection(collectionName))
+      .map((response: Response) => response.json());
+  }
+
+  // getEntitiesByQuery(collectionName: string, query: object) {
+  //   return this.http.get(getUrlWithQueryForCollection(collectionName, query))
+  //     .map((response: Response) => response.json());
+  // }
+
+  getCountOfEntitiesByQuery(collectionName: string, query: object) {
+    return this.http.get(getUrlWithQueryForCollection(collectionName, query, true))
       .map((response: Response) => response.json());
   }
 
@@ -52,6 +68,12 @@ export class MongoLabService {
 
 function getUrlForCollection(collectionName: string) {
   return `${BASE_URL}/${collectionName}?apiKey=${API_KEY}`;
+}
+
+function getUrlWithQueryForCollection(collectionName: string, q: object, getCount: boolean = false) {
+  const query = JSON.stringify(q);
+
+  return `${BASE_URL}/${collectionName}?q=${query}&c=${getCount}&apiKey=${API_KEY}`;
 }
 
 function getUrlForEntity(collectionName: string, id: string) {

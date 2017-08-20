@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs/Rx';
 import {IPlace} from './place.model';
 import {MongoLabService} from '../../common/mongo-lab.service';
 
-const collectionName = 'places';
+const {PLACES, COMPANIES, EMPLOYEES} = MongoLabService.collections;
 
 @Injectable()
 export class PlaceService {
@@ -20,11 +20,11 @@ export class PlaceService {
   }
 
   getPlaces(): Observable<IPlace[]> {
-    return this.mongoLab.getEntities(collectionName);
+    return this.mongoLab.getEntities(PLACES);
   }
 
   getPlace(id: string): Observable<IPlace> {
-    return this.mongoLab.getEntity(collectionName, id);
+    return this.mongoLab.getEntity(PLACES, id);
   }
 
   createPlace(place): Observable<IPlace> {
@@ -32,15 +32,24 @@ export class PlaceService {
       place._id = place.postalCode;
     }
 
-    return this.mongoLab.createEntity(collectionName, place);
+    return this.mongoLab.createEntity(PLACES, place);
   }
 
   updatePlace(place): Observable<IPlace> {
-    return this.mongoLab.updateEntity(collectionName, place);
+    return this.mongoLab.updateEntity(PLACES, place);
   }
 
-  deletePlace(id) {
-    // TODO: Do not allow deletion if place is referecend by other entities
-    return this.mongoLab.deleteEntity(collectionName, id);
+  checkIfPlaceCanBeDeleted(id: string, name: string) {
+    const employeesQuery = {placeOfBirth: name};
+    const companiesQuery = {headquarters: name};
+
+    const employeesForPlaceCount = this.mongoLab.getCountOfEntitiesByQuery(EMPLOYEES, employeesQuery);
+    const companiesForPlaceCount = this.mongoLab.getCountOfEntitiesByQuery(COMPANIES, companiesQuery);
+
+    return Observable.forkJoin([employeesForPlaceCount, companiesForPlaceCount]);
+  }
+
+  deletePlace(id: string) {
+    return this.mongoLab.deleteEntity(PLACES, id);
   }
 }
