@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Validators} from '@angular/forms';
 import {PlaceService} from './shared/place.service';
@@ -60,8 +60,18 @@ export class PlaceComponent implements OnInit, EntityFormComponent {
   }
 
   deleteEntity() {
-    this.placeService.deletePlace(this.formService.getOriginalEntity()._id)
-      .subscribe(() => this.cancel());
+    const { _id, name } = this.formService.getOriginalEntity();
+    this.placeService.checkIfPlaceCanBeDeleted(_id, name)
+      .subscribe((result) => {
+        const referringEmployees = result[0];
+        const referringCompanies = result[1];
+
+        if (referringEmployees > 0 || referringCompanies > 0) {
+          alert(`Place '${name}' cannot be deleted since it's referrenced by other entities`);
+        } else {
+          this.placeService.deletePlace(_id).subscribe(() => this.cancel());
+        }
+      });
   }
 
   cancel() {

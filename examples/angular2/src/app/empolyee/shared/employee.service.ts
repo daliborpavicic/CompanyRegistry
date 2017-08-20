@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {IEmployee} from './employee.model';
 import {MongoLabService} from '../../common/mongo-lab.service';
 
-const collectionName = 'employees';
+const collectionName = MongoLabService.collections.EMPLOYEES;
 
 @Injectable()
 export class EmployeeService {
