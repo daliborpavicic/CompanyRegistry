@@ -1,0 +1,22 @@
+{
+  "name": "company-registry-elm",
+  "version": "0.0.0",
+  "description": "This web application represents a registry which tracks companies and their employees",
+  "main": "index.js",
+  "author": "Dalibor Pavicic",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --port 3000"
+  },
+  "dependencies": {
+    "css-loader": "^0.28.5",
+    "elm-webpack-loader": "^4.3.1",
+    "file-loader": "^0.11.2",
+    "font-awesome": "4",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
+  }
+}
