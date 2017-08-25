@@ -1,14 +1,32 @@
 module Models exposing (..)
 
-import RemoteData exposing (WebData)
-
-type alias Model =
-  { places: WebData (List Place)
-  }
-
 initialModel : Model
 initialModel =
-  { places = RemoteData.Loading
+  { places = []
+  , place = { id = "", postalCode = "", name = "" }
+  , currentPage = HomePage
+  , serverRequest = Nothing
+  , message = ""
+  }
+
+type Page =
+  HomePage
+  | PlacesPage (List Place)
+  | PlaceDetailsPage PlaceId Place
+  | NotFoundPage
+
+type Route
+  = HomeRoute
+  | PlacesRoute
+  | PlaceDetailsRoute PlaceId
+  | NotFoundRoute
+
+type alias Model =
+  { places : List Place
+  , place: Place
+  , currentPage : Page
+  , serverRequest : Maybe String
+  , message: String
   }
 
 type alias PlaceId =

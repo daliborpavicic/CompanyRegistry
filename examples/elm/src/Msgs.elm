@@ -1,7 +1,10 @@
 module Msgs exposing (..)
 
+import Http
 import Models exposing (Place)
-import RemoteData exposing (WebData)
+import Navigation exposing (Location)
 
 type Msg
-  = OnFetchPlaces (WebData (List Place))
+  = OnFetchPlaces (Result Http.Error (List Place))
+  | OnFetchPlace (Result Http.Error Place)
+  | OnLocationChange Location

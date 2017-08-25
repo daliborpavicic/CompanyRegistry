@@ -1,31 +1,19 @@
 module Main exposing (..)
 
-import Html exposing (program)
-import Msgs exposing (Msg)
+import Navigation exposing (Location)
+import Msgs exposing (..)
 import Models exposing (Model, initialModel)
-import Update exposing (update)
 import View exposing (view)
-import Commands exposing (fetchPlaces)
+import Update exposing (update, urlUpdate)
+import Subscriptions exposing (subscriptions)
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, fetchPlaces )
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
-
-
--- MAIN
-
+init : Location -> ( Model, Cmd Msg )
+init location =
+  initialModel |> urlUpdate location
 
 main : Program Never Model Msg
 main =
-    program
+    Navigation.program Msgs.OnLocationChange
         { init = init
         , view = view
         , update = update
