@@ -5,6 +5,7 @@ import Html.Attributes exposing (class, href)
 import Models exposing (Model, Page(..), Route(..), PlaceId, Place)
 import Routing exposing (toUrl)
 import Msgs exposing (Msg(..))
+import Places.List exposing (placesList)
 
 appView : Model -> Html Msg
 appView model =
@@ -18,7 +19,7 @@ appView model =
 nav : Model -> Html Msg
 nav model =
   ul [ class "nav nav-sidebar" ]
-    [ li [ class "active" ] [ a [ href <| toUrl HomeRoute ] [ text "Home" ] ]
+    [ li [] [ a [  class "active", href <| toUrl HomeRoute ] [ text "Home" ] ]
     , li [] [ a [ href <| toUrl PlacesRoute ] [ text "Places" ] ]
     ]
 
@@ -32,7 +33,7 @@ page model =
       placesPage places
 
     PlaceDetailsPage placeId place ->
-      placeDetailsPage model placeId place
+      placeDetailsPage placeId place
 
     NotFoundPage ->
       notFoundView
@@ -45,10 +46,10 @@ homeView model =
 
 placesPage : (List Place) -> Html Msg
 placesPage places =
-  text (toString places)
+  placesList places
 
-placeDetailsPage : Model -> PlaceId -> Place -> Html Msg
-placeDetailsPage model placeId place =
+placeDetailsPage : PlaceId -> Place -> Html Msg
+placeDetailsPage placeId place =
   text (toString place)
 
 -- Html msg is a generic type. Msg is a concrete type and msg is a type variable

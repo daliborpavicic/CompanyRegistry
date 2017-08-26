@@ -3,11 +3,16 @@ module Models exposing (..)
 initialModel : Model
 initialModel =
   { places = []
-  , place = { id = "", postalCode = "", name = "" }
+  , place = emptyPlace
   , currentPage = HomePage
   , serverRequest = Nothing
   , message = ""
   }
+
+emptyPlace : Place
+emptyPlace =
+  { id = "", postalCode = "", name = "" }
+
 
 type Page =
   HomePage
