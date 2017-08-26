@@ -1,40 +1,17 @@
 module Places.List exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
-import Msgs exposing (Msg)
-import Models exposing (Place)
-import RemoteData exposing (WebData)
-
-view : WebData (List Place) -> Html Msg
-view response =
-  div []
-    [ nav
-    , maybeList response
-    ]
-
-maybeList : WebData (List Place) -> Html Msg
-maybeList response =
-  case response of
-    RemoteData.NotAsked ->
-      text ""
-    RemoteData.Loading ->
-      text "Loading ..."
-    RemoteData.Success places ->
-      placesList places
-    RemoteData.Failure error ->
-      text (toString error)
-
-nav : Html Msg
-nav =
-  div [] [
-    h2 [] [ text "Places" ]
-  ]
+import Html.Attributes exposing (class, href)
+import Html.Events exposing (onClick)
+import Routing exposing (placePath)
+import Msgs exposing (Msg(..))
+import Models exposing (Place, Page(PlaceDetailsPage), emptyPlace)
 
 placesList : List Place -> Html Msg
 placesList places =
   div [ class "container" ]
-    [ table []
+    [ h3 [] [ text "Places" ]
+    , table [ class "table table-hover table-bordered" ]
       [ thead []
         [ tr []
           [ th [] [ text "Id" ]
@@ -44,12 +21,19 @@ placesList places =
         ]
       , tbody [] ( List.map placeRow places )
       ]
+    , addNewPlaceBtn
     ]
 
 placeRow : Place -> Html Msg
 placeRow place =
-  tr []
+  tr [ onClick (NavigateTo (PlaceDetailsPage place.id place)) ]
     [ td [] [ text place.id ]
     , td [] [ text place.postalCode]
     , td [] [ text place.name ]
     ]
+
+addNewPlaceBtn : Html Msg
+addNewPlaceBtn =
+  a
+    [ class "btn btn-primary", onClick (NavigateTo (PlaceDetailsPage "new" emptyPlace) ) ]
+    [ text "Add place" ]

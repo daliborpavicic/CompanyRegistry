@@ -2,7 +2,7 @@ module Update exposing (..)
 
 import Navigation exposing (Location)
 import Msgs exposing (Msg(..))
-import Models exposing (Model, Route(..), Page(..))
+import Models exposing (Model, Route(..), Page(..), emptyPlace)
 import Commands exposing (fetchPlaces, fetchPlace)
 import Routing exposing (parseLocation, modifyUrl, isEqual)
 
@@ -35,6 +35,9 @@ update msg model =
 
         Msgs.OnLocationChange newLocation ->
           urlUpdate newLocation model
+
+        Msgs.NavigateTo page ->
+          ( model, Routing.newUrl <| page )
 
 urlUpdate : Location -> Model -> ( Model, Cmd Msg )
 urlUpdate newLocation model =
@@ -70,12 +73,15 @@ urlUpdate newLocation model =
           )
 
         PlaceDetailsRoute id ->
-          ( { model
-            | serverRequest = Just id
-            , message = "Loading place : " ++ id
-            }
-          , Cmd.batch
-              [ fetchPlace id
-              , Routing.modifyUrl model.currentPage
-              ]
-          )
+          if id == "new" then
+            ( { model | currentPage = (PlaceDetailsPage id emptyPlace) }, Cmd.none )
+          else
+            ( { model
+              | serverRequest = Just id
+              , message = "Loading place : " ++ id
+              }
+            , Cmd.batch
+                [ fetchPlace id
+                , Routing.modifyUrl model.currentPage
+                ]
+            )
