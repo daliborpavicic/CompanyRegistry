@@ -39,6 +39,22 @@ update msg model =
         Msgs.NavigateTo page ->
           ( model, Routing.newUrl <| page )
 
+        Msgs.SetPostalCode newPostalCode ->
+          let
+            oldPlace = model.place
+            newPlace = { oldPlace | postalCode = newPostalCode }
+          in
+            ( { model | place = newPlace }, Cmd.none )
+
+        Msgs.SetPlaceName newPlaceName ->
+          let
+            oldPlace = model.place
+            newPlace = { oldPlace | name = newPlaceName }
+          in
+            ( { model | place = newPlace }, Cmd.none )
+        Msgs.SubmitPlaceForm ->
+          ( model, Routing.newUrl <| PlacesPage model.places )
+
 urlUpdate : Location -> Model -> ( Model, Cmd Msg )
 urlUpdate newLocation model =
   let

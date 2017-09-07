@@ -9,3 +9,6 @@ type Msg
   | OnFetchPlace (Result Http.Error Place)
   | OnLocationChange Location
   | NavigateTo Page
+  | SetPostalCode String
+  | SetPlaceName String
+  | SubmitPlaceForm

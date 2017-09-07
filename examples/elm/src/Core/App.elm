@@ -6,6 +6,7 @@ import Models exposing (Model, Page(..), Route(..), PlaceId, Place)
 import Routing exposing (toUrl)
 import Msgs exposing (Msg(..))
 import Places.List exposing (placesList)
+import Places.Edit exposing(placeForm)
 
 appView : Model -> Html Msg
 appView model =
@@ -50,7 +51,7 @@ placesPage places =
 
 placeDetailsPage : PlaceId -> Place -> Html Msg
 placeDetailsPage placeId place =
-  text (toString place)
+  placeForm place
 
 -- Html msg is a generic type. Msg is a concrete type and msg is a type variable
 -- msg is used when view doesn't emit messages to make it more reusable
