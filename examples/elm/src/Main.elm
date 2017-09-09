@@ -1,32 +1,84 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, button)
-import Html.Events exposing (onClick)
+import Html exposing (Html, text, div, button, input, table, thead, tbody, tr, th, td)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
 
-type alias Model = Int
+type alias Place =
+  { id:  String
+  , postalCode : String
+  , name : String
+  }
 
-type Msg = Increment | Decrement
+setPostalCode : Place -> String -> Place
+setPostalCode place postalCode =
+    { place | postalCode = postalCode }
+
+setName : Place -> String -> Place
+setName place placeName =
+    { place | name = placeName }
+
+type alias Model =
+  { editedPlace : Place
+  , places : List Place
+  }
+
+type Msg
+    = SetPostalCode String
+    | SetName String
+    | SavePlace Place
 
 init : ( Model, Cmd Msg )
 init =
-  ( 0, Cmd.none )
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text <| toString model ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
+  let
+    initialModel = { editedPlace = Place "" "" "", places = [] }
+  in
+    ( initialModel, Cmd.none )
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Increment ->
-      ( model + 1, Cmd.none )
+    SetPostalCode newPostalCode ->
+      let
+        place = setPostalCode model.editedPlace newPostalCode
+      in
+        ( { model | editedPlace = place }, Cmd.none )
 
-    Decrement ->
-      ( model - 1, Cmd.none )
+    SetName newName ->
+      let
+        place = setName model.editedPlace newName
+      in
+        ( { model | editedPlace = place }, Cmd.none )
+
+    SavePlace newPlace ->
+      ( { model | places = newPlace :: model.places }, Cmd.none )
+
+view : Model -> Html Msg
+view model =
+  div []
+    [ input [ type_ "text", placeholder "Postal Code", onInput SetPostalCode ] []
+    , input [ type_ "text", placeholder "Name", onInput SetName ] []
+    , button [ onClick (SavePlace model.editedPlace) ] [ text "Save" ]
+    , placesList model.places
+    ]
+
+placesList places =
+  table []
+    [ thead []
+      [ tr []
+          [ th [] [ text "Postal Code" ]
+          , th [] [ text "Name" ]
+          ]
+      ]
+    , tbody [] (List.map placeRow places)
+    ]
+
+placeRow place =
+  tr []
+    [ td [] [ text place.postalCode ]
+    , td [] [ text place.name ]
+    ]
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
