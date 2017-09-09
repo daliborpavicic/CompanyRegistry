@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Http
+import Http exposing (..)
 
 type alias Place =
   { id:  String
@@ -54,7 +54,7 @@ fetchPlaceById placeId =
     request =
       Http.get url placeDecoder
   in
-    Http.send NewPlace request
+    Http.send OnFetchPlace request
 
 submitPlace place =
   let
@@ -62,9 +62,25 @@ submitPlace place =
     placeToSubmit = { place | id = place.postalCode }
     jsonBody = Http.stringBody "application/json" (Encode.encode 0 (placeEncoder placeToSubmit))
     request =
-      Http.post url jsonBody Decode.string
+      Http.post url jsonBody placeDecoder
   in
-    Http.send SubmitPlace request
+    Http.send OnSavePlace request
+
+deletePlaceById placeId =
+  let
+    url = placeUrl placeId
+    request =
+      Http.request
+        { method = "DELETE"
+        , headers = []
+        , url = url
+        , body = Http.emptyBody
+        , expect = expectJson placeDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+  in
+    Http.send OnDeletePlace request
 
 
 type alias Model =
@@ -72,6 +88,7 @@ type alias Model =
   , places : List Place
   , placeId: String
   , errorMessage: String
+  , infoMessage: String
   }
 
 type Msg
@@ -80,13 +97,15 @@ type Msg
     | SavePlace Place
     | FetchPlace String
     | SetPlaceId String
-    | NewPlace (Result Http.Error Place)
-    | SubmitPlace (Result Http.Error String)
+    | DeletePlace String
+    | OnFetchPlace (Result Http.Error Place)
+    | OnSavePlace (Result Http.Error Place)
+    | OnDeletePlace (Result Http.Error Place)
 
 init : ( Model, Cmd Msg )
 init =
   let
-    initialModel = { editedPlace = Place "" "" "", places = [], placeId = "", errorMessage = "" }
+    initialModel = { editedPlace = Place "" "" "", places = [], placeId = "", errorMessage = "", infoMessage = "" }
   in
     ( initialModel, Cmd.none )
 
@@ -114,10 +133,10 @@ update msg model =
     FetchPlace placeIdToFetch ->
       ( model, fetchPlaceById placeIdToFetch )
 
-    NewPlace (Ok newPlace) ->
+    OnFetchPlace (Ok newPlace) ->
       ( { model | editedPlace = newPlace, errorMessage = "" }, Cmd.none )
 
-    NewPlace (Err err) ->
+    OnFetchPlace (Err err) ->
       case err of
         Http.BadStatus response ->
           ( { model | errorMessage = (toString response.status.code) ++ " " ++  response.status.message }, Cmd.none )
@@ -125,10 +144,19 @@ update msg model =
         _ ->
           ( model, Cmd.none )
 
-    SubmitPlace (Ok message) ->
+    OnSavePlace (Ok savedPlace) ->
+      ( { model | infoMessage = "Successfully saved place " ++ savedPlace.name }, Cmd.none )
+
+    OnSavePlace (Err _) ->
       ( model, Cmd.none )
 
-    SubmitPlace (Err _) ->
+    DeletePlace placeId ->
+      ( model, deletePlaceById placeId )
+
+    OnDeletePlace (Ok deletedPlace) ->
+      ( { model | infoMessage = "Successfully deleted place " ++ deletedPlace.name }, Cmd.none )
+
+    OnDeletePlace (Err _) ->
       ( model, Cmd.none )
 
 view : Model -> Html Msg
@@ -138,6 +166,7 @@ view model =
     , input [ type_ "text", placeholder "Postal Code", defaultValue model.editedPlace.postalCode, onInput SetPostalCode ] []
     , input [ type_ "text", placeholder "Name", defaultValue model.editedPlace.name, onInput SetName ] []
     , button [ onClick (SavePlace model.editedPlace) ] [ text "Save" ]
+    , button [ onClick (DeletePlace model.editedPlace.postalCode) ] [ text "Delete" ]
     , placesList model.places
     ]
 
@@ -147,6 +176,7 @@ fetchPlaceForm model =
     [ input [ type_ "text", placeholder "Enter postal code...", onInput SetPlaceId ] []
     , button [ onClick (FetchPlace model.placeId) ] [ text "Get place" ]
     , p [ style [ ("color", "red") ] ] [ text model.errorMessage ]
+    , p [ style [ ("color", "blue") ] ] [ text model.infoMessage ]
     , br [] []
     ]
 
