@@ -89,6 +89,7 @@ type alias Model =
   , placeId: String
   , errorMessage: String
   , infoMessage: String
+  , originalPlace : Place
   }
 
 type Msg
@@ -101,11 +102,19 @@ type Msg
     | OnFetchPlace (Result Http.Error Place)
     | OnSavePlace (Result Http.Error Place)
     | OnDeletePlace (Result Http.Error Place)
+    | RevertChanges
 
 init : ( Model, Cmd Msg )
 init =
   let
-    initialModel = { editedPlace = Place "" "" "", places = [], placeId = "", errorMessage = "", infoMessage = "" }
+    initialModel =
+      { editedPlace = Place "" "" ""
+      , places = []
+      , placeId = ""
+      , errorMessage = ""
+      , infoMessage = ""
+      , originalPlace = Place "" "" ""
+      }
   in
     ( initialModel, Cmd.none )
 
@@ -134,7 +143,7 @@ update msg model =
       ( model, fetchPlaceById placeIdToFetch )
 
     OnFetchPlace (Ok newPlace) ->
-      ( { model | editedPlace = newPlace, errorMessage = "" }, Cmd.none )
+      ( { model | editedPlace = newPlace, originalPlace = newPlace, errorMessage = "" }, Cmd.none )
 
     OnFetchPlace (Err err) ->
       case err of
@@ -159,14 +168,19 @@ update msg model =
     OnDeletePlace (Err _) ->
       ( model, Cmd.none )
 
+    RevertChanges ->
+      ( { model | editedPlace = model.originalPlace }, Cmd.none )
+
 view : Model -> Html Msg
 view model =
+  Debug.log (toString model)
   div []
     [ fetchPlaceForm model
-    , input [ type_ "text", placeholder "Postal Code", defaultValue model.editedPlace.postalCode, onInput SetPostalCode ] []
-    , input [ type_ "text", placeholder "Name", defaultValue model.editedPlace.name, onInput SetName ] []
+    , input [ type_ "text", placeholder "Postal Code", value model.editedPlace.postalCode, onInput SetPostalCode ] []
+    , input [ type_ "text", placeholder "Name", value model.editedPlace.name, onInput SetName ] []
     , button [ onClick (SavePlace model.editedPlace) ] [ text "Save" ]
     , button [ onClick (DeletePlace model.editedPlace.postalCode) ] [ text "Delete" ]
+    , button [ onClick RevertChanges ] [ text "Revert" ]
     , placesList model.places
     ]
 
