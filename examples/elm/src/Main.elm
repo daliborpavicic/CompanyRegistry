@@ -1,19 +1,40 @@
 module Main exposing (..)
 
-import Navigation exposing (Location)
-import Msgs exposing (..)
-import Models exposing (Model, initialModel)
-import View exposing (view)
-import Update exposing (update, urlUpdate)
-import Subscriptions exposing (subscriptions)
+import Html exposing (Html, text, div, button)
+import Html.Events exposing (onClick)
 
-init : Location -> ( Model, Cmd Msg )
-init location =
-  initialModel |> urlUpdate location
+type alias Model = Int
+
+type Msg = Increment | Decrement
+
+init : ( Model, Cmd Msg )
+init =
+  ( 0, Cmd.none )
+
+view : Model -> Html Msg
+view model =
+  div []
+    [ button [ onClick Decrement ] [ text "-" ]
+    , div [] [ text <| toString model ]
+    , button [ onClick Increment ] [ text "+" ]
+    ]
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case msg of
+    Increment ->
+      ( model + 1, Cmd.none )
+
+    Decrement ->
+      ( model - 1, Cmd.none )
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
 
 main : Program Never Model Msg
 main =
-    Navigation.program Msgs.OnLocationChange
+    Html.program
         { init = init
         , view = view
         , update = update
