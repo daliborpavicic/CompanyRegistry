@@ -105,6 +105,16 @@ updatePage page msg model =
                 ( { model | currentPage = Places subModel }, Cmd.none )
             ( PlaceLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Place subModel }, Cmd.none )
+
+            ( HomeMsg subMsg, Home subModel ) ->
+                toPage Home HomeMsg Home.update subMsg subModel
+
+            ( PlacesMsg subMsg, Places subModel ) ->
+                toPage Places PlacesMsg Places.update subMsg subModel
+
+            ( PlaceMsg subMsg, Place subModel ) ->
+                toPage Place PlaceMsg Place.update subMsg subModel
+
             ( _, _ ) ->
                 ( model, Cmd.none )
 

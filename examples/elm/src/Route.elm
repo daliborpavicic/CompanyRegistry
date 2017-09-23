@@ -32,7 +32,7 @@ routeToString route =
                 Place id ->
                     [ "places", id ]
     in
-        "#/" ++ String.join "/" pieces
+        "/#/" ++ String.join "/" pieces
 
 href : Route -> Attribute msg
 href route =
