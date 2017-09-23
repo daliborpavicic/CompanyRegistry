@@ -9,11 +9,13 @@ import UrlParser as Url exposing ((</>), Parser, oneOf, parseHash, s, string)
 type Route
     = Home
     | Places
+    | Place String
 
 matchers : Parser ( Route -> a ) a
 matchers =
     oneOf
         [ Url.map Home Url.top
+        , Url.map Place (s "places" </> string)
         , Url.map Places (s "places")
         ]
 
@@ -26,6 +28,9 @@ routeToString route =
                     []
                 Places ->
                     [ "places" ]
+
+                Place id ->
+                    [ "places", id ]
     in
         "#/" ++ String.join "/" pieces
 

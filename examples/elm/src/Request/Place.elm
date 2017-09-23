@@ -12,6 +12,6 @@ fetchPlaces =
 
 fetchPlaceById : PlaceId -> Http.Request Place
 fetchPlaceById id =
-    Http.get (apiUrl ("/places" ++ id)) Place.decoder
+    Http.get (apiUrl ("/places/" ++ id)) Place.decoder
 
 
