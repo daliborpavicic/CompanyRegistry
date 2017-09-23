@@ -2,6 +2,7 @@
 
 require('font-awesome/css/font-awesome.css');
 require('bootstrap/dist/css/bootstrap.min.css');
+require('./styles.css');
 
 // Require index.html so it gets copied to dist
 require('./index.html');
