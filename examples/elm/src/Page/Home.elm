@@ -10,24 +10,12 @@ type alias Model =
 
 init : Task String Model
 init =
-    Task.succeed (Model "Welcome to Company Registry!")
+    Task.succeed (Model "Welcome to Company Registry")
 
 view : Model -> Html Msg
 view model =
-  div [ class "container-fluid" ]
-      [ div [ class "row" ]
-          [ div [ class "col-sm-2" ]
-              [ nav model ]
-          , div [ class "col-sm-10" ] []
-          ]
-      ]
-
-nav : Model -> Html Msg
-nav model =
-    ul [ class "nav nav-sidebar" ]
-        [ li [] [ a [ href "#/" ] [ text "Home" ] ]
-        , li [] [ a [ href "#places" ] [ text "Places" ] ]
-        , li [] [ a [ href "#companies" ] [ text "Companies" ] ]
+    div []
+        [ h1 [] [ text model.welcomeMessage ]
         ]
 
 type Msg

@@ -2,6 +2,8 @@ module Main exposing (main)
 
 import Page.Home as Home
 import Page.Places as Places
+import Page.Place as Place
+import Views.Page as Page
 import Route exposing (Route)
 import Task
 import Http
@@ -12,6 +14,7 @@ type Page
     = Blank
     | Home Home.Model
     | Places Places.Model
+    | Place Place.Model
 
 type alias Model =
     { currentPage : Page
@@ -33,22 +36,35 @@ view model =
 
 viewPage : Page -> Html Msg
 viewPage page =
+    let
+        frame =
+            Page.frame
+    in
     case page of
         Blank ->
-            Html.text "Blank Page!"
+            frame (Html.text "Blank Page!")
         Home subModel ->
             Home.view subModel
+                |> frame
                 |> Html.map HomeMsg
         Places subModel ->
             Places.view subModel
+                |> frame
                 |> Html.map PlacesMsg
+
+        Place subModel ->
+            Place.view subModel
+                |> frame
+                |> Html.map PlaceMsg
 
 type Msg
     = SetRoute (Maybe Route)
     | HomeLoaded (Result String Home.Model)
     | PlacesLoaded (Result Http.Error Places.Model)
+    | PlaceLoaded (Result Http.Error Place.Model)
     | HomeMsg Home.Msg
     | PlacesMsg Places.Msg
+    | PlaceMsg Place.Msg
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
@@ -63,6 +79,8 @@ setRoute maybeRoute model =
             transition HomeLoaded (Home.init)
         Just Route.Places ->
             transition PlacesLoaded (Places.init)
+        Just (Route.Place id) ->
+            transition PlaceLoaded (Place.init id)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -85,6 +103,8 @@ updatePage page msg model =
                 ( { model | currentPage = Home subModel }, Cmd.none )
             ( PlacesLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Places subModel }, Cmd.none )
+            ( PlaceLoaded (Ok subModel), _ ) ->
+                ( { model | currentPage = Place subModel }, Cmd.none )
             ( _, _ ) ->
                 ( model, Cmd.none )
 
