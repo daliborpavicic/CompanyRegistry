@@ -27,6 +27,6 @@ viewSideNavBar =
     ul [ class "nav nav-sidebar" ]
         [ li [] [ a [ Route.href Home ] [ text "Home" ] ]
         , li [] [ a [ Route.href Places ] [ text "Places" ] ]
---        , li [] [ a [ href "#companies" ] [ text "Companies" ] ]
+        , li [] [ a [ Route.href Employees ] [ text "Employees" ] ]
         ]
 

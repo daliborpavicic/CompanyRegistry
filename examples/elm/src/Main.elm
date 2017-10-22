@@ -3,6 +3,7 @@ module Main exposing (main)
 import Page.Home as Home
 import Page.Places as Places
 import Page.Place as Place
+import Page.Employees as Employees
 import Views.Page as Page
 import Route exposing (Route)
 import Task
@@ -15,6 +16,7 @@ type Page
     | Home Home.Model
     | Places Places.Model
     | Place Place.Model
+    | Employees Employees.Model
 
 type alias Model =
     { currentPage : Page
@@ -43,10 +45,12 @@ viewPage page =
     case page of
         Blank ->
             frame (Html.text "Blank Page!")
+
         Home subModel ->
             Home.view subModel
                 |> frame
                 |> Html.map HomeMsg
+
         Places subModel ->
             Places.view subModel
                 |> frame
@@ -57,14 +61,21 @@ viewPage page =
                 |> frame
                 |> Html.map PlaceMsg
 
+        Employees subModel ->
+            Employees.view subModel
+                |> frame
+                |> Html.map EmployeesMsg
+
 type Msg
     = SetRoute (Maybe Route)
     | HomeLoaded (Result String Home.Model)
     | PlacesLoaded (Result Http.Error Places.Model)
     | PlaceLoaded (Result Http.Error Place.Model)
+    | EmployeesLoaded (Result Http.Error Employees.Model)
     | HomeMsg Home.Msg
     | PlacesMsg Places.Msg
     | PlaceMsg Place.Msg
+    | EmployeesMsg Employees.Msg
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
@@ -81,6 +92,8 @@ setRoute maybeRoute model =
             transition PlacesLoaded (Places.init)
         Just (Route.Place id) ->
             transition PlaceLoaded (Place.init id)
+        Just Route.Employees ->
+            transition EmployeesLoaded (Employees.init)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -99,12 +112,16 @@ updatePage page msg model =
         case ( msg, page ) of
             ( SetRoute route, _ ) ->
                 setRoute route model
+
+-- TODO: Handle error part of Result to avoid silent fails
             ( HomeLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Home subModel }, Cmd.none )
             ( PlacesLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Places subModel }, Cmd.none )
             ( PlaceLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Place subModel }, Cmd.none )
+            ( EmployeesLoaded (Ok subModel), _ ) ->
+                ( { model | currentPage = Employees subModel }, Cmd.none )
 
             ( HomeMsg subMsg, Home subModel ) ->
                 toPage Home HomeMsg Home.update subMsg subModel
@@ -114,6 +131,9 @@ updatePage page msg model =
 
             ( PlaceMsg subMsg, Place subModel ) ->
                 toPage Place PlaceMsg Place.update subMsg subModel
+
+            ( EmployeesMsg subMsg, Employees subModel ) ->
+                toPage Employees EmployeesMsg Employees.update subMsg subModel
 
             ( _, _ ) ->
                 ( model, Cmd.none )
