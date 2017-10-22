@@ -85,6 +85,15 @@ type Msg
 
 view : Model -> Html Msg
 view model =
+    div []
+        [ h3 [] [ text "Places list" ]
+        , placesTable model
+        , hr [] []
+        , div [] [ a [ class "btn btn-primary", href "#places/new" ] [ text "Add new place" ] ]
+        ]
+
+placesTable : Model -> Html Msg
+placesTable model =
     let
         filteredPlaces =
             filterPlaces model

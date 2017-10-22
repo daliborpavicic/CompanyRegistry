@@ -36,12 +36,24 @@ view model =
                 [ i [] []
                 , text " Name"
                 ]
+              , th []
+                [ i [] []
+                , text " Surname"
+                ]
+              , th []
+                [ i [] []
+                , text " Email"
+                ]
               ]
           , tr []
             [ th []
                 [ input [ type_ "text", class "form-control", placeholder "JMBG..." ] [] ]
             , th []
                 [ input [ type_ "text", class "form-control", placeholder "Name..." ] [] ]
+            , th []
+                [ input [ type_ "text", class "form-control", placeholder "Surname..." ] [] ]
+            , th []
+                [ input [ type_ "text", class "form-control", placeholder "Email..." ] [] ]
             ]
           ]
         , tbody [] (List.map employeeRow model.employees)
@@ -52,6 +64,8 @@ employeeRow employee =
   tr []
     [ td [] [ a [ href ("#employees/" ++ employee.id) ] [ text employee.jmbg ] ]
     , td [] [ text employee.name ]
+    , td [] [ text employee.surname ]
+    , td [] [ text employee.email ]
     ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )
