@@ -11,6 +11,10 @@ type alias Place =
     , name : String
     }
 
+setId : String -> Place -> Place
+setId id place =
+    { place | id = id }
+
 setName : String -> Place -> Place
 setName name place =
     { place | name = name }
