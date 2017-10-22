@@ -9,6 +9,9 @@ import Request.Place
 import Route
 import Task exposing (Task)
 import Validate
+import Util exposing (isShorterThan)
+import Views.Form as Form
+import Views.Button as Button
 
 type alias Model =
     { sourcePlace : Place
@@ -39,10 +42,6 @@ init id =
         in
             Task.map populateModel loadPlace
 
-isShorterThan : error -> Int -> Validate.Validator error String
-isShorterThan error maxLength =
-    Validate.ifInvalid (\subject -> (String.length subject) >= maxLength) error
-
 postalCodeValidators : List (Validate.Validator String String)
 postalCodeValidators =
     [ Validate.ifBlank "Postal code is required"
@@ -70,64 +69,37 @@ placeForm model =
                 "Add new place"
             else
                 "Edit place " ++ model.sourcePlace.name
+        postalCode =
+            model.editingPlace.postalCode
+        name =
+            model.editingPlace.name
         hasPostalCodeErrors =
-            not <| Validate.any postalCodeValidators model.editingPlace.postalCode
+            not <| Validate.any postalCodeValidators postalCode
         postalCodeErrors =
-            Validate.all postalCodeValidators model.editingPlace.postalCode
+            Validate.all postalCodeValidators postalCode
         hasNameErrors =
-            not <| Validate.any nameValidators model.editingPlace.name
+            not <| Validate.any nameValidators name
         nameErrors =
-            Validate.all nameValidators model.editingPlace.name
+            Validate.all nameValidators name
     in
     div []
-    [ h3 [] [ text title ]
-    , hr [] []
-    , Html.form [ class "form-horizontal", onSubmit Save ]
-      [ div [ class "form-group", classList [ ("has-error", hasPostalCodeErrors) ] ]
-        [ label [ class "control-label col-sm-2" ] [ text "Postal Code" ]
-        , div [ class "col-sm-6 col-md-4" ]
-            [ input
-              [ type_ "text"
-              , class "form-control"
-              , placeholder "Postal Code"
-              , value model.editingPlace.postalCode
-              , onInput SetPostalCode
-              ] []
-              , fieldErrors postalCodeErrors
+        [ h3 [] [ text title ]
+        , hr [] []
+        , Form.horizontalForm []
+          [ Form.textInput "Postal Code" [ value postalCode, onInput SetPostalCode ] postalCodeErrors
+           , Form.textInput "Name" [ value name, onInput SetName ] nameErrors
+           , div [ class "col-sm-offset-2" ]
+                [ Button.actionButton
+                    "Save" Button.Primary [ disabled (hasPostalCodeErrors || hasNameErrors), onClick Save ] []
+                , Button.actionButton
+                    " Back" Button.Default [ onClick NavigateBack ] [ i [ class "fa fa-chevron-left" ] [] ]
+                , Button.actionButton
+                    "Revert" Button.Warning [ disabled (isAdd model),  onClick RevertChanges ] []
+                , Button.actionButton
+                    "Delete" Button.Danger [ disabled (isAdd model), onClick Delete ] []
+                ]
             ]
         ]
-      , div [ class "form-group", classList [ ("has-error", hasNameErrors) ] ]
-        [ label [ class "control-label col-sm-2" ] [ text "Name" ]
-        , div [ class "col-sm-6 col-md-4" ]
-            [ input
-              [ type_ "text"
-              , class "form-control"
-              , placeholder "Name"
-              , value model.editingPlace.name
-              , onInput SetName
-              ] []
-              , fieldErrors nameErrors
-            ]
-        ]
-       , div [ class "col-sm-offset-2" ]
-            [ button [ class "btn btn-primary", disabled (hasPostalCodeErrors || hasNameErrors) ] [ text "Save" ]
-            , button
-              [ class "btn btn-default"
-              , type_ "button"
-              , onClick NavigateBack
-              ]
-              [ i [ class "fa fa-chevron-left" ] []
-              , text " Back"
-              ]
-          , button [ class "btn btn-warning", type_ "button", disabled (isAdd model),  onClick RevertChanges ] [ text "Revert" ]
-          , button [ class "btn btn-danger", type_ "button", disabled (isAdd model), onClick Delete ] [ text "Delete" ]
-        ]
-      ]
-    ]
-
-fieldErrors errors =
-    div []
-        (List.map (\err -> div [ class "help-block" ] [ text err ]) errors)
 
 type Msg
     = NoOp
