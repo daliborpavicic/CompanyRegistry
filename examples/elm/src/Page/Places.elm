@@ -9,31 +9,51 @@ import Request.Place
 import Task exposing (Task)
 
 type alias Model =
-    { postalCodeFilter : String
-    , postalCodeSort : SortOrder
+    { sort : Sort
+    , postalCodeFilter : String
     , nameFilter : String
-    , nameSort : SortOrder
     , places: List Place
     }
 
-type SortOrder = Asc | Desc | None
+type ColumnName = PostalCode | Name
 
-sortClass : SortOrder -> Attribute msg
-sortClass order =
-    case order of
-        Asc ->
-            classList [ ("fa", True), ("fa-sort-asc", True) ]
-        Desc ->
-            classList [ ("fa", True), ("fa-sort-desc", True) ]
-        None ->
-            classList [ ("fa", True), ("fa-sort", True) ]
+type SortOrder = Asc | Desc
+
+type Sort = None | Column ColumnName SortOrder
+
+sortClassForColumn : Sort -> ColumnName -> String
+sortClassForColumn sort forColumn =
+    let
+        sortClass =
+            case sort of
+                None ->
+                    "fa-sort"
+
+                Column columnName sortOrder ->
+                    if columnName == forColumn then
+                        if sortOrder == Asc then
+                            "fa-sort-asc"
+                        else
+                            "fa-sort-desc"
+                    else
+                        "fa-sort"
+    in
+        "fa " ++ sortClass
 
 toggleSort : SortOrder -> SortOrder
 toggleSort order =
     case order of
         Asc -> Desc
-        Desc -> None
-        None -> Asc
+        Desc -> Asc
+
+updateSort : Sort -> ColumnName -> Sort
+updateSort sort forColumn =
+    case sort of
+        None ->
+            Column forColumn Asc
+
+        Column columnName sortOrder ->
+            Column forColumn <| toggleSort sortOrder
 
 filterPlaces : Model -> List Place
 filterPlaces model =
@@ -44,28 +64,32 @@ filterPlaces model =
         )
         model.places
 
-sortPlaces : List Place -> Model -> List Place
-sortPlaces places model =
-    if model.postalCodeSort /= None then
-        let
-            sortedAsc =
-                List.sortBy .postalCode places
-        in
-            if model.postalCodeSort == Asc then
-                sortedAsc
-            else
-                List.reverse sortedAsc
-    else if model.nameSort /= None then
-        let
-            sortedAsc =
-                List.sortBy .name places
-        in
-            if model.nameSort == Asc then
-                sortedAsc
-            else
-                List.reverse sortedAsc
-    else
-        places
+sortPlaces : List Place -> Sort -> List Place
+sortPlaces places sort =
+    let
+        sortByPostalCode places =
+            List.sortBy .postalCode places
+        sortByName places =
+            List.sortBy .name places
+    in
+    case sort of
+        None ->
+            places
+
+        Column columnName sortOrder ->
+            case columnName of
+                PostalCode ->
+                    if sortOrder == Asc then
+                        sortByPostalCode places
+                    else
+                        sortByPostalCode places
+                            |> List.reverse
+                Name ->
+                    if sortOrder == Asc then
+                        sortByName places
+                    else
+                        sortByName places
+                            |> List.reverse
 
 init : Task Http.Error Model
 init =
@@ -74,14 +98,13 @@ init =
             Request.Place.fetchPlaces
                 |> Http.toTask
     in
-        Task.map (Model "" None "" None) loadPlaces
+        Task.map (Model None "" "") loadPlaces
 
 type Msg
     = NoOp
     | SetPostalCodeFilter String
     | SetNameFilter String
-    | TogglePostalCodeSort
-    | ToggleNameSort
+    | ToggleSort Sort ColumnName
 
 view : Model -> Html Msg
 view model =
@@ -98,17 +121,17 @@ placesTable model =
         filteredPlaces =
             filterPlaces model
         sortedPlaces =
-            sortPlaces filteredPlaces model
+            sortPlaces filteredPlaces model.sort
     in
     table [ class "table table-hover table-bordered" ]
         [ thead []
           [ tr []
-              [ th [ onClick TogglePostalCodeSort ]
-                [ i [ sortClass model.postalCodeSort ] []
+              [ th [ onClick (ToggleSort model.sort PostalCode) ]
+                [ i [ class ("fa " ++ (sortClassForColumn model.sort PostalCode)) ] []
                 , text " Postal Code"
                 ]
-              , th [ onClick ToggleNameSort ]
-                [ i [ sortClass model.nameSort ] []
+              , th [ onClick (ToggleSort model.sort Name) ]
+                [ i [ class ("fa " ++ (sortClassForColumn model.sort Name)) ] []
                 , text " Name"
                 ]
               ]
@@ -141,16 +164,9 @@ update msg model =
         SetNameFilter value ->
             ( { model | nameFilter = value }, Cmd.none )
 
-        TogglePostalCodeSort ->
+        ToggleSort currentSort forColumn ->
             let
                 newSort =
-                    toggleSort model.postalCodeSort
+                    updateSort currentSort forColumn
             in
-            ( { model | postalCodeSort = newSort, nameSort = None }, Cmd.none )
-
-        ToggleNameSort ->
-            let
-                newSort =
-                    toggleSort model.nameSort
-            in
-            ( { model | nameSort = newSort, postalCodeSort = None }, Cmd.none )
+                ( { model | sort = newSort }, Cmd.none )
