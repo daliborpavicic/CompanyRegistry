@@ -9,11 +9,12 @@ import Data.Place exposing (Place)
 
 type alias Model =
     { welcomeMessage : String
+    , tableState : Table.State
     }
 
 init : Task String Model
 init =
-    Task.succeed (Model "Welcome to Company Registry")
+    Task.succeed (Model "Welcome to Company Registry" (Table.initialState "Places table"))
 
 places =
     [ Place "21000" "21000" "Novi Sad"
@@ -27,24 +28,31 @@ places =
 config : Table.Config Place Msg
 config =
     Table.config
-        { columns =
+        { toMsg = SetTableState
+        , columns =
             [ Table.stringColumn "Postal Code" .postalCode
             , Table.stringColumn "Name" .name
             ]
         }
 
 view : Model -> Html Msg
-view { welcomeMessage } =
+view { welcomeMessage, tableState } =
     div []
         [ h1 [] [ text welcomeMessage ]
-        , Table.view config places
+        , Table.view config tableState places
         ]
 
 type Msg
     = NoOp
+    | SetTableState Table.State
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        SetTableState newState ->
+            ( { model | tableState = newState }
+            , Cmd.none
+            )
