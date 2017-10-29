@@ -1,9 +1,11 @@
 module Page.Home exposing (Model, Msg, init, update, view)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes as Attr exposing (class, href)
+import Html.Events as E
 import Task exposing (Task)
-import Views.Table as Table
+import Views.Table exposing (customizations)
+import Table
 
 import Data.Place exposing (Place)
 
@@ -14,7 +16,7 @@ type alias Model =
 
 init : Task String Model
 init =
-    Task.succeed (Model "Welcome to Company Registry" (Table.initialState "Places table"))
+    Task.succeed (Model "Welcome to Company Registry" (Table.initialSort "Postal Code"))
 
 places =
     [ Place "21000" "21000" "Novi Sad"
@@ -27,12 +29,14 @@ places =
 
 config : Table.Config Place Msg
 config =
-    Table.config
-        { toMsg = SetTableState
+    Table.customConfig
+        { toId = .id
+        , toMsg = SetTableState
         , columns =
             [ Table.stringColumn "Postal Code" .postalCode
             , Table.stringColumn "Name" .name
             ]
+        , customizations = customizations
         }
 
 view : Model -> Html Msg

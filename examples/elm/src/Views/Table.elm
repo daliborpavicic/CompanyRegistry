@@ -1,84 +1,63 @@
-module Views.Table exposing (view, stringColumn, config, Config, State, initialState)
+module Views.Table exposing (customizations)
 
 import Html exposing (..)
-import Html.Attributes exposing (href, class, type_, placeholder, classList)
-import Html.Events as Events exposing (onInput, onClick)
-import Json.Decode as Json
+import Html.Attributes as Attr exposing (class, href)
+import Html.Events as E
+import Table
 
-type State =
-    State String
-
-initialState : String -> State
-initialState title =
-    State title
-
-type alias ColumnData data msg =
-    { name : String
-    , viewData : data -> Html msg
-    }
-
-type Column data msg =
-    Column (ColumnData data msg)
-
-type Config data msg =
-    Config
-        { toMsg : State -> msg
-        , columns : List (ColumnData data msg)
-        }
-
-config :
-    { toMsg : State -> msg
-    , columns : List (Column data msg)
-    }
-    -> Config data msg
-config { toMsg, columns } =
-    Config
-        { toMsg = toMsg
-        , columns = List.map (\(Column cData) -> cData) columns
-        }
-
-stringColumn : String -> (data -> String) -> Column data msg
-stringColumn name toStr =
-    Column
-        { name = name
-        , viewData = Html.text << toStr
-        }
-
-
-view (Config { toMsg, columns }) state data =
+customizations : Table.Customizations data msg
+customizations =
     let
-        cols = Debug.log "columns" columns
+        defaults =
+            Table.defaultCustomizations
     in
-    table [ class "table table-hover table-bordered" ]
-        [ tableCaption state toMsg
-        , thead []
-          [ tr [] (List.map (\column -> headerCell column) columns)
-          ]
-        , tbody [] (List.map (\data -> dataRow columns data) data)
+        { defaults
+        | tableAttrs = [ class "table table-hover table-bordered" ]
+        , thead = thead
+        }
+
+thead : List (String, Table.Status, Attribute msg) -> Table.HtmlDetails msg
+thead columns =
+    Table.HtmlDetails [] [ headerRow columns, filterRow columns ]
+
+filterRow columns =
+    Html.tr [] (List.map filterCell columns)
+
+filterCell (columnName, status, onClick) =
+    Html.th []
+        [ input
+            [ Attr.type_ "text"
+            , class "form-control"
+            , Attr.placeholder (columnName ++ "...")
+            ] []
         ]
 
-tableCaption : State -> (State -> msg) -> Html msg
-tableCaption (State title) toMsg =
-    caption [ (onClickCaption title toMsg) ] [ text title ]
+headerRow : List (String, Table.Status, Attribute msg) -> Html msg
+headerRow columns =
+    Html.tr [] (List.map headerCell columns)
 
-dataRow : List (ColumnData data msg) -> data -> Html msg
-dataRow columns data =
-    tr []
-        (List.map (\column -> dataCell column.viewData data) columns)
+headerCell : (String, Table.Status, Attribute msg) -> Html msg
+headerCell (columnName, status, onClick) =
+    let
+        icon =
+          case status of
+            Table.Unsortable ->
+              Html.text ""
 
-headerCell : ColumnData data msg -> Html msg
-headerCell { name, viewData } =
-    th []
-        [ i [ class "fa fa-sort" ] []
-        , text name
-        ]
+            Table.Sortable selected ->
+                if selected then (faIcon "sort-asc") else (faIcon "sort-desc")
 
-dataCell : (data -> Html msg) -> data -> Html msg
-dataCell toHtml data =
-    td []
-        [ toHtml data ]
+            Table.Reversible Nothing ->
+                faIcon "sort"
 
-onClickCaption : String -> (State -> msg) -> Attribute msg
-onClickCaption title toMsg =
-    Events.on "click" <| Json.map toMsg <|
-        Json.map State (Json.succeed "New caption")
+            Table.Reversible (Just isReversed) ->
+                if isReversed then (faIcon "sort-desc") else (faIcon "sort-asc")
+      in
+        th [ onClick ]
+            [ icon
+            , text (" " ++ columnName)
+            ]
+
+faIcon : String -> Html msg
+faIcon name =
+    Html.i [ class ( "fa fa-" ++ name ) ] []
