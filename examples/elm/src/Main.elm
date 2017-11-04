@@ -1,7 +1,8 @@
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
+import Html.Attributes as Attr
 import Dict
-import ReusableCounter exposing (..)
+import FilterableList exposing (..)
 
 main = Html.program
   { init = init
@@ -16,56 +17,55 @@ init = ( initialModel, Cmd.none )
 -- MODEL
 
 type alias Model =
-    { counterDict : CounterDict
-    , currentCounterID : CounterID
+    { fruitsModel : ListModel
+    , vegetablesModel : ListModel
     }
 
-type alias CounterDict = Dict.Dict CounterID CounterModel
+fruits : List String
+fruits =
+    [ "avocado"
+    , "banana"
+    , "apple"
+    , "pineapple"
+    , "melon"
+    ]
 
-type alias CounterID = Int
+vegetables : List String
+vegetables =
+    [ "potato"
+    , "tomato"
+    , "carrot"
+    , "cabbage"
+    , "onion"
+    ]
 
 initialModel : Model
 initialModel =
-    { counterDict = Dict.empty
-    , currentCounterID = 0
-    }
+    Model "" ""
 
 -- UPDATE
 
 
 type Msg
-    = AddCounter
-    | ModifyCounter CounterID CounterModifier
-    | RemoveCounter CounterID
+    = SetFruitsFilter FilterSetter
+    | SetVegetablesFilter FilterSetter
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    AddCounter ->
+    SetFruitsFilter filterSetter ->
         let
-            nextID = model.currentCounterID + 1
             newModel =
-                { counterDict = Dict.insert nextID 0 model.counterDict
-                , currentCounterID = nextID
-                }
+                { model | fruitsModel = setFilter filterSetter model.fruitsModel }
         in
       ( newModel, Cmd.none )
 
-    ModifyCounter counterID modifier ->
+    SetVegetablesFilter filterSetter ->
         let
-            clickedCounter = Dict.get counterID model.counterDict
+            newModel =
+                { model | vegetablesModel = setFilter filterSetter model.vegetablesModel }
         in
-            case clickedCounter of
-                Just counter ->
-                    ( { model |
-                    counterDict =
-                        Dict.insert counterID (modifyCounter modifier counter) model.counterDict }
-                    , Cmd.none)
-                Nothing ->
-                    ( model, Cmd.none )
-
-    RemoveCounter counterID ->
-      ( { model | counterDict = Dict.remove counterID model.counterDict }, Cmd.none )
+      ( newModel, Cmd.none )
 
 
 -- VIEW
@@ -73,17 +73,28 @@ update action model =
 view : Model -> Html Msg
 view model =
   div []
-    [ div [] [ button [ onClick AddCounter ] [ text "Add Counter" ] ]
-    , div [] (List.map makeView (Dict.toList model.counterDict))
+    [ table []
+        [ thead []
+            [ tr []
+                [ th [] [ text "Fruits" ]
+                , th [] [ text "Vegetables" ]
+                ]
+            ]
+        , tbody []
+            [ tr []
+                [ td [] [ makeListView model.fruitsModel fruits SetFruitsFilter ]
+                , td [] [ makeListView model.vegetablesModel vegetables SetVegetablesFilter ]
+                ]
+            ]
+        ]
     ]
 
-makeView : (CounterID, CounterModel) -> Html Msg
-makeView (refID, counterModel) =
+makeListView : ListModel -> List String -> (FilterSetter -> Msg) -> Html Msg
+makeListView listModel data msg =
     let
-        counterConfig =
+        filterableListConfig =
             config
-                { modifyMsg = ModifyCounter refID
-                , removeMsg = RemoveCounter refID
+                { setFilterMsg = msg
                 }
     in
-        viewCounter counterConfig counterModel
+        viewList filterableListConfig listModel data
