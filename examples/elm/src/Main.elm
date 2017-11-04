@@ -1,7 +1,7 @@
 import Html exposing (..)
-import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
-
+import Dict
+import ReusableCounter exposing (..)
 
 main = Html.program
   { init = init
@@ -11,29 +11,61 @@ main = Html.program
   }
 
 init : ( Model, Cmd Msg )
-init = ( 0, Cmd.none )
+init = ( initialModel, Cmd.none )
 
 -- MODEL
 
-type alias Model = Int
+type alias Model =
+    { counterDict : CounterDict
+    , currentCounterID : CounterID
+    }
 
+type alias CounterDict = Dict.Dict CounterID CounterModel
+
+type alias CounterID = Int
+
+initialModel : Model
+initialModel =
+    { counterDict = Dict.empty
+    , currentCounterID = 0
+    }
 
 -- UPDATE
 
 
-type Msg = Increment | Decrement | Clear
+type Msg
+    = AddCounter
+    | ModifyCounter CounterID CounterModifier
+    | RemoveCounter CounterID
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    Increment ->
-      ( model + 1, Cmd.none )
+    AddCounter ->
+        let
+            nextID = model.currentCounterID + 1
+            newModel =
+                { counterDict = Dict.insert nextID 0 model.counterDict
+                , currentCounterID = nextID
+                }
+        in
+      ( newModel, Cmd.none )
 
-    Decrement ->
-      ( model - 1, Cmd.none )
+    ModifyCounter counterID modifier ->
+        let
+            clickedCounter = Dict.get counterID model.counterDict
+        in
+            case clickedCounter of
+                Just counter ->
+                    ( { model |
+                    counterDict =
+                        Dict.insert counterID (modifyCounter modifier counter) model.counterDict }
+                    , Cmd.none)
+                Nothing ->
+                    ( model, Cmd.none )
 
-    Clear ->
-      ( 0, Cmd.none )
+    RemoveCounter counterID ->
+      ( { model | counterDict = Dict.remove counterID model.counterDict }, Cmd.none )
 
 
 -- VIEW
@@ -41,18 +73,17 @@ update action model =
 view : Model -> Html Msg
 view model =
   div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [ countStyle ] [ text (toString model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , button [ onClick Clear ] [ text "Clear" ]
+    [ div [] [ button [ onClick AddCounter ] [ text "Add Counter" ] ]
+    , div [] (List.map makeView (Dict.toList model.counterDict))
     ]
 
-countStyle : Attribute msg
-countStyle =
-  style
-    [ ("font-size", "20px")
-    , ("font-family", "monospace")
-    , ("display", "inline-block")
-    , ("width", "50px")
-    , ("text-align", "center")
-    ]
+makeView : (CounterID, CounterModel) -> Html Msg
+makeView (refID, counterModel) =
+    let
+        counterConfig =
+            config
+                { modifyMsg = ModifyCounter refID
+                , removeMsg = RemoveCounter refID
+                }
+    in
+        viewCounter counterConfig counterModel
