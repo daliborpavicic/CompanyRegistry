@@ -6,22 +6,32 @@ import Html.Events as E
 import Table
 
 initialModel sortedColumn =
-    TableModel (Table.initialSort sortedColumn)
+    TableModel (Table.initialSort sortedColumn) ""
 
 type alias TableModel =
     { sortState: Table.State
+    , currentFilter : String
     }
 
 type TableModifier
     = SetSortState Table.State
+    | SetFilter String FilterTerm
 
 type alias RecordWithId a = { a | id : String }
+
+type alias FilterTerm = String
 
 modifyTable : TableModifier -> TableModel -> TableModel
 modifyTable tableModifier tableModel =
     case tableModifier of
         SetSortState newSortState ->
             { tableModel | sortState = newSortState }
+
+        SetFilter columnName filterTerm ->
+            let
+                col = Debug.log "column name: " columnName
+            in
+            { tableModel | currentFilter = filterTerm }
 
 viewTable : Config data msg -> TableModel -> List (RecordWithId data) -> Html msg
 viewTable (Config { columns, modifyMsg }) tableModel =
@@ -31,8 +41,10 @@ viewTable (Config { columns, modifyMsg }) tableModel =
                 { toId = .id
                 , toMsg = (modifyMsg << SetSortState)
                 , columns = columns
-                , customizations = customizations
+                , customizations = (customizations modifyMsg)
                 }
+
+        currentFilter = Debug.log "Filter: " tableModel.currentFilter
     in
         Table.view sortableTableConfig tableModel.sortState
 
@@ -46,30 +58,31 @@ stringColumn : String -> (data -> String) -> Table.Column data msg
 stringColumn columnName toStr =
     Table.stringColumn columnName toStr
 
-customizations : Table.Customizations data msg
-customizations =
+customizations : (TableModifier -> msg) -> Table.Customizations data msg
+customizations modifyMsg =
     let
         defaults =
             Table.defaultCustomizations
     in
         { defaults
         | tableAttrs = [ class "table table-hover table-bordered" ]
-        , thead = thead
+        , thead = thead modifyMsg
         }
 
-thead : List (String, Table.Status, Attribute msg) -> Table.HtmlDetails msg
-thead columns =
-    Table.HtmlDetails [] [ headerRow columns, filterRow columns ]
+thead : (TableModifier -> msg) -> List (String, Table.Status, Attribute msg) -> Table.HtmlDetails msg
+thead modifyMsg columns =
+    Table.HtmlDetails [] [ headerRow columns, filterRow modifyMsg columns ]
 
-filterRow columns =
-    Html.tr [] (List.map filterCell columns)
+filterRow modifyMsg columns =
+    Html.tr [] (List.map (\column -> filterCell modifyMsg column) columns)
 
-filterCell (columnName, status, onClick) =
+filterCell modifyMsg (columnName, status, onClick) =
     Html.th []
         [ input
             [ Attr.type_ "text"
             , class "form-control"
             , Attr.placeholder (columnName ++ "...")
+            , E.onInput (modifyMsg << (SetFilter columnName))
             ] []
         ]
 
