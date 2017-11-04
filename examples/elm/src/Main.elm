@@ -1,148 +1,58 @@
-module Main exposing (main)
-
-import Page.Home as Home
-import Page.Places as Places
-import Page.Place as Place
-import Page.Employees as Employees
-import Views.Page as Page
-import Route exposing (Route)
-import Task
-import Http
 import Html exposing (..)
-import Navigation exposing (Location)
+import Html.Attributes exposing (style)
+import Html.Events exposing (onClick)
 
-type Page
-    = Blank
-    | Home Home.Model
-    | Places Places.Model
-    | Place Place.Model
-    | Employees Employees.Model
 
-type alias Model =
-    { currentPage : Page
-    }
+main = Html.program
+  { init = init
+  , view = view
+  , update = update
+  , subscriptions = (\_ -> Sub.none)
+  }
 
-init : Location -> ( Model, Cmd Msg )
-init location =
-    setRoute (Route.fromLocation location)
-        { currentPage = initialPage
-        }
+init : ( Model, Cmd Msg )
+init = ( 0, Cmd.none )
 
-initialPage : Page
-initialPage =
-    Blank
+-- MODEL
+
+type alias Model = Int
+
+
+-- UPDATE
+
+
+type Msg = Increment | Decrement | Clear
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update action model =
+  case action of
+    Increment ->
+      ( model + 1, Cmd.none )
+
+    Decrement ->
+      ( model - 1, Cmd.none )
+
+    Clear ->
+      ( 0, Cmd.none )
+
+
+-- VIEW
 
 view : Model -> Html Msg
 view model =
-    viewPage model.currentPage
+  div []
+    [ button [ onClick Decrement ] [ text "-" ]
+    , div [ countStyle ] [ text (toString model) ]
+    , button [ onClick Increment ] [ text "+" ]
+    , button [ onClick Clear ] [ text "Clear" ]
+    ]
 
-viewPage : Page -> Html Msg
-viewPage page =
-    let
-        frame =
-            Page.frame
-    in
-    case page of
-        Blank ->
-            frame (Html.text "Blank Page!")
-
-        Home subModel ->
-            Home.view subModel
-                |> frame
-                |> Html.map HomeMsg
-
-        Places subModel ->
-            Places.view subModel
-                |> frame
-                |> Html.map PlacesMsg
-
-        Place subModel ->
-            Place.view subModel
-                |> frame
-                |> Html.map PlaceMsg
-
-        Employees subModel ->
-            Employees.view subModel
-                |> frame
-                |> Html.map EmployeesMsg
-
-type Msg
-    = SetRoute (Maybe Route)
-    | HomeLoaded (Result String Home.Model)
-    | PlacesLoaded (Result Http.Error Places.Model)
-    | PlaceLoaded (Result Http.Error Place.Model)
-    | EmployeesLoaded (Result Http.Error Employees.Model)
-    | HomeMsg Home.Msg
-    | PlacesMsg Places.Msg
-    | PlaceMsg Place.Msg
-    | EmployeesMsg Employees.Msg
-
-setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
-setRoute maybeRoute model =
-    let
-        transition toMsg task =
-            ( model, Task.attempt toMsg task )
-    in
-    case maybeRoute of
-        Nothing ->
-            ( { model | currentPage = Blank }, Cmd.none )
-        Just Route.Home ->
-            transition HomeLoaded (Home.init)
-        Just Route.Places ->
-            transition PlacesLoaded (Places.init)
-        Just (Route.Place id) ->
-            transition PlaceLoaded (Place.init id)
-        Just Route.Employees ->
-            transition EmployeesLoaded (Employees.init)
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    updatePage model.currentPage msg model
-
-updatePage : Page -> Msg -> Model -> ( Model, Cmd Msg )
-updatePage page msg model =
-    let
-        toPage toModel toMsg subUpdate subMsg subModel =
-            let
-                ( newModel, newCmd ) =
-                    subUpdate subMsg subModel
-            in
-                ( { model | currentPage = (toModel newModel) }, Cmd.map toMsg newCmd )
-    in
-        case ( msg, page ) of
-            ( SetRoute route, _ ) ->
-                setRoute route model
-
--- TODO: Handle error part of Result to avoid silent fails
-            ( HomeLoaded (Ok subModel), _ ) ->
-                ( { model | currentPage = Home subModel }, Cmd.none )
-            ( PlacesLoaded (Ok subModel), _ ) ->
-                ( { model | currentPage = Places subModel }, Cmd.none )
-            ( PlaceLoaded (Ok subModel), _ ) ->
-                ( { model | currentPage = Place subModel }, Cmd.none )
-            ( EmployeesLoaded (Ok subModel), _ ) ->
-                ( { model | currentPage = Employees subModel }, Cmd.none )
-
-            ( HomeMsg subMsg, Home subModel ) ->
-                toPage Home HomeMsg Home.update subMsg subModel
-
-            ( PlacesMsg subMsg, Places subModel ) ->
-                toPage Places PlacesMsg Places.update subMsg subModel
-
-            ( PlaceMsg subMsg, Place subModel ) ->
-                toPage Place PlaceMsg Place.update subMsg subModel
-
-            ( EmployeesMsg subMsg, Employees subModel ) ->
-                toPage Employees EmployeesMsg Employees.update subMsg subModel
-
-            ( _, _ ) ->
-                ( model, Cmd.none )
-
-main : Program Never Model Msg
-main =
-    Navigation.program (Route.fromLocation >> SetRoute)
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+countStyle : Attribute msg
+countStyle =
+  style
+    [ ("font-size", "20px")
+    , ("font-family", "monospace")
+    , ("display", "inline-block")
+    , ("width", "50px")
+    , ("text-align", "center")
+    ]
