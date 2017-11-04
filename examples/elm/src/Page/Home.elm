@@ -4,19 +4,18 @@ import Html exposing (..)
 import Html.Attributes as Attr exposing (class, href)
 import Html.Events as E
 import Task exposing (Task)
-import Views.Table exposing (customizations)
-import Table
+import Views.Table as Table
 
 import Data.Place exposing (Place)
 
 type alias Model =
     { welcomeMessage : String
-    , tableState : Table.State
+    , tableModel : Table.TableModel
     }
 
 init : Task String Model
 init =
-    Task.succeed (Model "Welcome to Company Registry" (Table.initialSort "Postal Code"))
+    Task.succeed (Model "Welcome to Company Registry" (Table.initialModel "Postal Code"))
 
 places =
     [ Place "21000" "21000" "Novi Sad"
@@ -29,26 +28,24 @@ places =
 
 config : Table.Config Place Msg
 config =
-    Table.customConfig
-        { toId = .id
-        , toMsg = SetTableState
-        , columns =
-            [ Table.stringColumn "Postal Code" .postalCode
-            , Table.stringColumn "Name" .name
-            ]
-        , customizations = customizations
+    Table.Config
+        { columns =
+              [ Table.stringColumn "Postal Code" .postalCode
+              , Table.stringColumn "Name" .name
+              ]
+        , modifyMsg = SetTableModel
         }
 
 view : Model -> Html Msg
-view { welcomeMessage, tableState } =
+view { welcomeMessage, tableModel } =
     div []
         [ h1 [] [ text welcomeMessage ]
-        , Table.view config tableState places
+        , Table.viewTable config tableModel places
         ]
 
 type Msg
     = NoOp
-    | SetTableState Table.State
+    | SetTableModel Table.TableModifier
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -56,7 +53,7 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        SetTableState newState ->
-            ( { model | tableState = newState }
+        SetTableModel modifier ->
+            ( { model | tableModel = Table.modifyTable modifier model.tableModel }
             , Cmd.none
             )
