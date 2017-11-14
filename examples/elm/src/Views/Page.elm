@@ -28,5 +28,6 @@ viewSideNavBar =
         [ li [] [ a [ Route.href Home ] [ text "Home" ] ]
         , li [] [ a [ Route.href Places ] [ text "Places" ] ]
         , li [] [ a [ Route.href Employees ] [ text "Employees" ] ]
+        , li [] [ a [ Route.href Companies ] [ text "Companies" ] ]
         ]
 

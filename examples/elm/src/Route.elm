@@ -11,6 +11,7 @@ type Route
     | Places
     | Place String
     | Employees
+    | Companies
 
 matchers : Parser ( Route -> a ) a
 matchers =
@@ -19,6 +20,7 @@ matchers =
         , Url.map Place (s "places" </> string)
         , Url.map Places (s "places")
         , Url.map Employees (s "employees")
+        , Url.map Companies (s "companies")
         ]
 
 routeToString : Route -> String
@@ -36,6 +38,9 @@ routeToString route =
 
                 Employees ->
                     [ "employees" ]
+
+                Companies ->
+                    [ "companies" ]
     in
         "/#/" ++ String.join "/" pieces
 
