@@ -1,63 +1,63 @@
-module Page.Employees exposing (Model, Msg, init, update, view)
+module Page.Companies exposing (Model, Msg, init, update, view)
 
-import Data.Employee exposing (Employee)
+import Data.Company exposing (Company)
 import Http
 import Html exposing (..)
 import Html.Attributes exposing (href, class, type_, placeholder, classList)
-import Request.Employee
+import Request.Company
 import Task exposing (Task)
 import Views.FilterableTable as FTable exposing (Filters, ColumnConfig)
 import Table
 
 type alias Model =
     { tableState : Table.State
-    , filters : Filters Employee
-    , employees : List Employee
+    , filters : Filters Company
+    , companies : List Company
     }
 
 init : Task Http.Error Model
 init =
     let
-        loadEmployees =
-            Request.Employee.fetchEmployees
+        loadCompanies =
+            Request.Company.fetchCompanies
                 |> Http.toTask
     in
-        Task.map (Model (Table.initialSort jmbg.name) initialFilters) loadEmployees
+        Task.map (Model (Table.initialSort pib.name) initialFilters) loadCompanies
 
-jmbg : ColumnConfig Employee
-jmbg =
-    ColumnConfig "JMBG" .jmbg
+pib : ColumnConfig Company
+pib =
+    ColumnConfig "PIB" .pib
 
-employeeName : ColumnConfig Employee
-employeeName =
+companyName : ColumnConfig Company
+companyName =
     ColumnConfig "Name" .name
 
-surname : ColumnConfig Employee
-surname =
-    ColumnConfig "Surname" .surname
+phoneNumber : ColumnConfig Company
+phoneNumber =
+    ColumnConfig "Phone Number" .phoneNumber
 
-email : ColumnConfig Employee
+email : ColumnConfig Company
 email =
     ColumnConfig "Email" .email
 
-initialFilters : Filters Employee
+initialFilters : Filters Company
 initialFilters =
     FTable.filters
-        [ (jmbg.name, FTable.stringFilter jmbg.toStr "")
-        , (employeeName.name, FTable.stringFilter employeeName.toStr "")
-        , (surname.name, FTable.stringFilter surname.toStr "")
+        [ (pib.name, FTable.stringFilter pib.toStr "")
+        , (companyName.name, FTable.stringFilter companyName.toStr "")
+        , (phoneNumber.name, FTable.stringFilter phoneNumber.toStr "")
         , (email.name, FTable.stringFilter email.toStr "")
         ]
 
-config : Table.Config Employee Msg
+config : Table.Config Company Msg
 config =
     Table.customConfig
         { toId = .id
         , toMsg = SetTableState
         , columns =
-            [ Table.stringColumn jmbg.name jmbg.toStr
-            , Table.stringColumn employeeName.name employeeName.toStr
-            , Table.stringColumn surname.name surname.toStr
+            [ Table.stringColumn pib.name pib.toStr
+            , Table.stringColumn companyName.name companyName.toStr
+            , Table.stringColumn phoneNumber.name phoneNumber.toStr
             , Table.stringColumn email.name email.toStr
             ]
         , customizations = FTable.customizations SetColumnFilter
@@ -69,16 +69,16 @@ type Msg
     | SetColumnFilter String String
 
 view : Model -> Html Msg
-view { tableState, filters, employees } =
+view { tableState, filters, companies } =
     let
-        filteredEmployees =
-            FTable.filterData filters employees
+        filteredCompanies =
+            FTable.filterData filters companies
     in
         div []
-            [ h3 [] [ text "Employees list" ]
-            , Table.view config tableState filteredEmployees
+            [ h3 [] [ text "Companies list" ]
+            , Table.view config tableState filteredCompanies
             , hr [] []
-            , div [] [ a [ class "btn btn-primary", href "#employees/new" ] [ text "Add new employee" ] ]
+            , div [] [ a [ class "btn btn-primary", href "#companies/new" ] [ text "Add new company" ] ]
             ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )

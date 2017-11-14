@@ -7,89 +7,14 @@ import Html.Attributes exposing (href, class, type_, placeholder, classList)
 import Html.Events exposing (onInput, onClick)
 import Request.Place
 import Task exposing (Task)
+import Views.FilterableTable as FTable exposing (Filters, ColumnConfig)
+import Table
 
 type alias Model =
-    { sort : Sort
-    , postalCodeFilter : String
-    , nameFilter : String
+    { tableState : Table.State
+    , filters : Filters Place
     , places: List Place
     }
-
-type ColumnName = PostalCode | Name
-
-type SortOrder = Asc | Desc
-
-type Sort = None | Column ColumnName SortOrder
-
-sortClassForColumn : Sort -> ColumnName -> String
-sortClassForColumn sort forColumn =
-    let
-        sortClass =
-            case sort of
-                None ->
-                    "fa-sort"
-
-                Column columnName sortOrder ->
-                    if columnName == forColumn then
-                        if sortOrder == Asc then
-                            "fa-sort-asc"
-                        else
-                            "fa-sort-desc"
-                    else
-                        "fa-sort"
-    in
-        "fa " ++ sortClass
-
-toggleSort : SortOrder -> SortOrder
-toggleSort order =
-    case order of
-        Asc -> Desc
-        Desc -> Asc
-
-updateSort : Sort -> ColumnName -> Sort
-updateSort sort forColumn =
-    case sort of
-        None ->
-            Column forColumn Asc
-
-        Column columnName sortOrder ->
-            Column forColumn <| toggleSort sortOrder
-
-filterPlaces : Model -> List Place
-filterPlaces model =
-    List.filter
-        (\place ->
-            (String.isEmpty model.postalCodeFilter || String.contains model.postalCodeFilter place.postalCode)
-            && (String.isEmpty model.nameFilter || String.contains model.nameFilter place.name)
-        )
-        model.places
-
-sortPlaces : List Place -> Sort -> List Place
-sortPlaces places sort =
-    let
-        sortByPostalCode places =
-            List.sortBy .postalCode places
-        sortByName places =
-            List.sortBy .name places
-    in
-    case sort of
-        None ->
-            places
-
-        Column columnName sortOrder ->
-            case columnName of
-                PostalCode ->
-                    if sortOrder == Asc then
-                        sortByPostalCode places
-                    else
-                        sortByPostalCode places
-                            |> List.reverse
-                Name ->
-                    if sortOrder == Asc then
-                        sortByName places
-                    else
-                        sortByName places
-                            |> List.reverse
 
 init : Task Http.Error Model
 init =
@@ -98,59 +23,52 @@ init =
             Request.Place.fetchPlaces
                 |> Http.toTask
     in
-        Task.map (Model None "" "") loadPlaces
+        Task.map (Model (Table.initialSort postalCode.name) initialFilters) loadPlaces
+
+postalCode : ColumnConfig Place
+postalCode =
+    ColumnConfig "Postal Code" .postalCode
+
+placeName : ColumnConfig Place
+placeName =
+    ColumnConfig "Name" .name
+
+initialFilters : Filters Place
+initialFilters =
+    FTable.filters
+        [ (postalCode.name, FTable.stringFilter postalCode.toStr "")
+        , (placeName.name, FTable.stringFilter .name "")
+        ]
+
+config : Table.Config Place Msg
+config =
+    Table.customConfig
+        { toId = .id
+        , toMsg = SetTableState
+        , columns =
+            [ Table.stringColumn postalCode.name postalCode.toStr
+            , Table.stringColumn placeName.name placeName.toStr
+            ]
+        , customizations = FTable.customizations SetColumnFilter
+        }
 
 type Msg
     = NoOp
-    | SetPostalCodeFilter String
-    | SetNameFilter String
-    | ToggleSort Sort ColumnName
+    | SetTableState Table.State
+    | SetColumnFilter String String
 
 view : Model -> Html Msg
-view model =
-    div []
-        [ h3 [] [ text "Places list" ]
-        , placesTable model
-        , hr [] []
-        , div [] [ a [ class "btn btn-primary", href "#places/new" ] [ text "Add new place" ] ]
-        ]
-
-placesTable : Model -> Html Msg
-placesTable model =
+view { tableState, filters, places } =
     let
         filteredPlaces =
-            filterPlaces model
-        sortedPlaces =
-            sortPlaces filteredPlaces model.sort
+            FTable.filterData filters places
     in
-    table [ class "table table-hover table-bordered" ]
-        [ thead []
-          [ tr []
-              [ th [ onClick (ToggleSort model.sort PostalCode) ]
-                [ i [ class ("fa " ++ (sortClassForColumn model.sort PostalCode)) ] []
-                , text " Postal Code"
-                ]
-              , th [ onClick (ToggleSort model.sort Name) ]
-                [ i [ class ("fa " ++ (sortClassForColumn model.sort Name)) ] []
-                , text " Name"
-                ]
-              ]
-          , tr []
-            [ th []
-                [ input [ type_ "text", class "form-control", placeholder "Postal Code...", onInput SetPostalCodeFilter ] [] ]
-            , th []
-                [ input [ type_ "text", class "form-control", placeholder "Name...", onInput SetNameFilter ] [] ]
+        div []
+            [ h3 [] [ text "Places list" ]
+            , Table.view config tableState filteredPlaces
+            , hr [] []
+            , div [] [ a [ class "btn btn-primary", href "#places/new" ] [ text "Add new place" ] ]
             ]
-          ]
-        , tbody [] (List.map placeRow sortedPlaces)
-        ]
-
-placeRow : Place -> Html Msg
-placeRow place =
-  tr []
-    [ td [] [ a [ href ("#places/" ++ place.id) ] [ text place.postalCode ] ]
-    , td [] [ text place.name ]
-    ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -158,15 +76,14 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        SetPostalCodeFilter value ->
-            ( { model | postalCodeFilter = value }, Cmd.none )
+        SetTableState newState ->
+            ( { model | tableState = newState }
+            , Cmd.none
+            )
 
-        SetNameFilter value ->
-            ( { model | nameFilter = value }, Cmd.none )
-
-        ToggleSort currentSort forColumn ->
+        SetColumnFilter columnName filterTerm ->
             let
-                newSort =
-                    updateSort currentSort forColumn
+                currentFilters =
+                    model.filters
             in
-                ( { model | sort = newSort }, Cmd.none )
+            ({ model | filters = (FTable.setFilterTerm columnName filterTerm currentFilters) }, Cmd.none )

@@ -1,10 +1,15 @@
-module Views.Table exposing (customizations, Filters, stringFilter, filters, setFilterTerm, filterData)
+module Views.FilterableTable exposing (customizations, Filters, stringFilter, filters, setFilterTerm, filterData, ColumnConfig)
 
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class, href)
 import Html.Events as E
 import Table
 import Dict
+
+type alias ColumnConfig data =
+    { name : String
+    , toStr : (data -> String)
+    }
 
 type ColumnFilter data =
     ColumnFilter

@@ -4,6 +4,7 @@ import Page.Home as Home
 import Page.Places as Places
 import Page.Place as Place
 import Page.Employees as Employees
+import Page.Companies as Companies
 import Views.Page as Page
 import Route exposing (Route)
 import Task
@@ -17,6 +18,7 @@ type Page
     | Places Places.Model
     | Place Place.Model
     | Employees Employees.Model
+    | Companies Companies.Model
 
 type alias Model =
     { currentPage : Page
@@ -66,16 +68,23 @@ viewPage page =
                 |> frame
                 |> Html.map EmployeesMsg
 
+        Companies subModel ->
+            Companies.view subModel
+                |> frame
+                |> Html.map CompaniesMsg
+
 type Msg
     = SetRoute (Maybe Route)
     | HomeLoaded (Result String Home.Model)
     | PlacesLoaded (Result Http.Error Places.Model)
     | PlaceLoaded (Result Http.Error Place.Model)
     | EmployeesLoaded (Result Http.Error Employees.Model)
+    | CompaniesLoaded (Result Http.Error Companies.Model)
     | HomeMsg Home.Msg
     | PlacesMsg Places.Msg
     | PlaceMsg Place.Msg
     | EmployeesMsg Employees.Msg
+    | CompaniesMsg Companies.Msg
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
@@ -94,6 +103,8 @@ setRoute maybeRoute model =
             transition PlaceLoaded (Place.init id)
         Just Route.Employees ->
             transition EmployeesLoaded (Employees.init)
+        Just Route.Companies ->
+            transition CompaniesLoaded (Companies.init)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -122,6 +133,8 @@ updatePage page msg model =
                 ( { model | currentPage = Place subModel }, Cmd.none )
             ( EmployeesLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Employees subModel }, Cmd.none )
+            ( CompaniesLoaded (Ok subModel), _ ) ->
+                ( { model | currentPage = Companies subModel }, Cmd.none )
 
             ( HomeMsg subMsg, Home subModel ) ->
                 toPage Home HomeMsg Home.update subMsg subModel
@@ -134,6 +147,9 @@ updatePage page msg model =
 
             ( EmployeesMsg subMsg, Employees subModel ) ->
                 toPage Employees EmployeesMsg Employees.update subMsg subModel
+
+            ( CompaniesMsg subMsg, Companies subModel ) ->
+                toPage Companies CompaniesMsg Companies.update subMsg subModel
 
             ( _, _ ) ->
                 ( model, Cmd.none )
