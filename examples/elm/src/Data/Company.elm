@@ -48,6 +48,6 @@ encoder company =
     [ ("_id", Encode.string company.id )
     , ("pib", Encode.string company.pib)
     , ("name", Encode.string company.name)
-    , ("phoneNumber", Encode.string company.name)
-    , ("email", Encode.string company.name)
+    , ("phoneNumber", Encode.string company.phoneNumber)
+    , ("email", Encode.string company.email)
     ]

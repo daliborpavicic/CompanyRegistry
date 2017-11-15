@@ -4,7 +4,9 @@ import Page.Home as Home
 import Page.Places as Places
 import Page.Place as Place
 import Page.Employees as Employees
+import Page.Employee as Employee
 import Page.Companies as Companies
+import Page.Company as Company
 import Views.Page as Page
 import Route exposing (Route)
 import Task
@@ -18,7 +20,9 @@ type Page
     | Places Places.Model
     | Place Place.Model
     | Employees Employees.Model
+    | Employee Employee.Model
     | Companies Companies.Model
+    | Company Company.Model
 
 type alias Model =
     { currentPage : Page
@@ -68,10 +72,20 @@ viewPage page =
                 |> frame
                 |> Html.map EmployeesMsg
 
+        Employee subModel ->
+            Employee.view subModel
+                |> frame
+                |> Html.map EmployeeMsg
+
         Companies subModel ->
             Companies.view subModel
                 |> frame
                 |> Html.map CompaniesMsg
+
+        Company subModel ->
+            Company.view subModel
+                |> frame
+                |> Html.map CompanyMsg
 
 type Msg
     = SetRoute (Maybe Route)
@@ -79,12 +93,16 @@ type Msg
     | PlacesLoaded (Result Http.Error Places.Model)
     | PlaceLoaded (Result Http.Error Place.Model)
     | EmployeesLoaded (Result Http.Error Employees.Model)
+    | EmployeeLoaded (Result Http.Error Employee.Model)
     | CompaniesLoaded (Result Http.Error Companies.Model)
+    | CompanyLoaded (Result Http.Error Company.Model)
     | HomeMsg Home.Msg
     | PlacesMsg Places.Msg
     | PlaceMsg Place.Msg
     | EmployeesMsg Employees.Msg
+    | EmployeeMsg Employee.Msg
     | CompaniesMsg Companies.Msg
+    | CompanyMsg Company.Msg
 
 setRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
 setRoute maybeRoute model =
@@ -103,8 +121,12 @@ setRoute maybeRoute model =
             transition PlaceLoaded (Place.init id)
         Just Route.Employees ->
             transition EmployeesLoaded (Employees.init)
+        Just (Route.Employee id) ->
+            transition EmployeeLoaded (Employee.init id)
         Just Route.Companies ->
             transition CompaniesLoaded (Companies.init)
+        Just (Route.Company id) ->
+            transition CompanyLoaded (Company.init id)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -133,8 +155,12 @@ updatePage page msg model =
                 ( { model | currentPage = Place subModel }, Cmd.none )
             ( EmployeesLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Employees subModel }, Cmd.none )
+            ( EmployeeLoaded (Ok subModel), _ ) ->
+                ( { model | currentPage = Employee subModel }, Cmd.none )
             ( CompaniesLoaded (Ok subModel), _ ) ->
                 ( { model | currentPage = Companies subModel }, Cmd.none )
+            ( CompanyLoaded (Ok subModel), _ ) ->
+                ( { model | currentPage = Company subModel }, Cmd.none )
 
             ( HomeMsg subMsg, Home subModel ) ->
                 toPage Home HomeMsg Home.update subMsg subModel
@@ -148,8 +174,14 @@ updatePage page msg model =
             ( EmployeesMsg subMsg, Employees subModel ) ->
                 toPage Employees EmployeesMsg Employees.update subMsg subModel
 
+            ( EmployeeMsg subMsg, Employee subModel ) ->
+                toPage Employee EmployeeMsg Employee.update subMsg subModel
+
             ( CompaniesMsg subMsg, Companies subModel ) ->
                 toPage Companies CompaniesMsg Companies.update subMsg subModel
+
+            ( CompanyMsg subMsg, Company subModel ) ->
+                toPage Company CompanyMsg Company.update subMsg subModel
 
             ( _, _ ) ->
                 ( model, Cmd.none )
