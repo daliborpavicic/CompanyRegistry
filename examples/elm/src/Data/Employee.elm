@@ -13,6 +13,26 @@ type alias Employee =
     , email : String
     }
 
+setId : String -> Employee -> Employee
+setId id employee =
+    { employee | id = id }
+
+setJmbg : String -> Employee -> Employee
+setJmbg jmbg employee =
+    { employee | jmbg = jmbg }
+
+setName : String -> Employee -> Employee
+setName name employee =
+    { employee | name = name }
+
+setSurname: String -> Employee -> Employee
+setSurname surname employee =
+    { employee | surname = surname }
+
+setEmail: String -> Employee -> Employee
+setEmail email employee =
+    { employee | email = email }
+
 decoder : Decoder Employee
 decoder =
     Decode.map5 Employee
