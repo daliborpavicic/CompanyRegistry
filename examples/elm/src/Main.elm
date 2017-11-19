@@ -24,6 +24,20 @@ type Page
     | Companies Companies.Model
     | Company Company.Model
 
+toActiveRoute : Page -> Maybe Route
+toActiveRoute page =
+    case page of
+        Home _ ->
+            Just Route.Home
+        Places _ ->
+            Just Route.Places
+        Employees _ ->
+            Just Route.Employees
+        Companies _ ->
+            Just Route.Companies
+        _ ->
+            Nothing
+
 type alias Model =
     { currentPage : Page
     }
@@ -46,7 +60,7 @@ viewPage : Page -> Html Msg
 viewPage page =
     let
         frame =
-            Page.frame
+            Page.frame (toActiveRoute page)
     in
     case page of
         Blank ->

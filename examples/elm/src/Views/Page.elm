@@ -1,33 +1,43 @@
 module Views.Page exposing (frame)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (..)
 import Route exposing (Route(..))
 
-frame : Html msg -> Html msg
-frame pageContent =
+frame : Maybe Route -> Html msg -> Html msg
+frame activeRoute pageContent =
     div [ class "container-fluid" ]
         [ div [ class "row" ]
-            [ viewHeader ]
-        , div [ class "row" ]
             [ div [ class "col-sm-2"]
-                [ viewSideNavBar ]
+                [ viewSideNavBar activeRoute ]
             , div [ class "col-sm-10" ]
                 [ pageContent ]
             ]
         ]
 
-viewHeader : Html msg
-viewHeader =
-    nav [ class "navbar navbar-default" ]
-        [ text "Company Registry" ]
-
-viewSideNavBar : Html msg
-viewSideNavBar =
+viewSideNavBar : Maybe Route -> Html msg
+viewSideNavBar activeRoute =
+    let
+        maybeActiveLink =
+            navbarLink activeRoute
+    in
     ul [ class "nav nav-sidebar" ]
-        [ li [] [ a [ Route.href Home ] [ text "Home" ] ]
-        , li [] [ a [ Route.href Places ] [ text "Places" ] ]
-        , li [] [ a [ Route.href Employees ] [ text "Employees" ] ]
-        , li [] [ a [ Route.href Companies ] [ text "Companies" ] ]
+        [ maybeActiveLink Home [ text "Home" ]
+        , maybeActiveLink Places [ text "Places" ]
+        , maybeActiveLink Employees [ text "Employees" ]
+        , maybeActiveLink Companies [ text "Companies" ]
         ]
+
+navbarLink : Maybe Route -> Route -> List (Html msg) -> Html msg
+navbarLink activeRoute route linkContent =
+    let
+        isActive =
+            case activeRoute of
+                Nothing ->
+                    False
+                Just activeRoute ->
+                    activeRoute == route
+    in
+    li [ class "nav-item" ]
+        [ a [ Route.href route, classList [ ("active", isActive) ] ] linkContent ]
 

@@ -9,6 +9,7 @@ import Request.Place
 import Task exposing (Task)
 import Views.FilterableTable as FTable exposing (Filters, ColumnConfig)
 import Table
+import Route
 
 type alias Model =
     { tableState : Table.State
@@ -49,13 +50,19 @@ config =
             [ Table.stringColumn postalCode.name postalCode.toStr
             , Table.stringColumn placeName.name placeName.toStr
             ]
-        , customizations = FTable.customizations SetColumnFilter
+        , customizations = FTable.customizations SetColumnFilter toRowAttrs
         }
+
+toRowAttrs : Place -> List (Attribute Msg)
+toRowAttrs place =
+    [ onClick (NavigateToPlace place.id)
+    ]
 
 type Msg
     = NoOp
     | SetTableState Table.State
     | SetColumnFilter String String
+    | NavigateToPlace String
 
 view : Model -> Html Msg
 view { tableState, filters, places } =
@@ -87,3 +94,6 @@ update msg model =
                     model.filters
             in
             ({ model | filters = (FTable.setFilterTerm columnName filterTerm currentFilters) }, Cmd.none )
+
+        NavigateToPlace id ->
+            ( model, Route.modifyUrl (Route.Place id) )
