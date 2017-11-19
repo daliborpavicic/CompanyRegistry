@@ -70,8 +70,8 @@ isFilterMatch record (ColumnFilter { dataToStr, term }) =
     in
         String.isEmpty columnValue || String.contains term columnValue
 
-customizations : (String -> String -> msg) -> Table.Customizations data msg
-customizations onFilterColumn =
+customizations : (String -> String -> msg) -> (data -> List (Attribute msg)) -> Table.Customizations data msg
+customizations onFilterColumn toRowAttrs =
     let
         defaults =
             Table.defaultCustomizations
@@ -79,6 +79,7 @@ customizations onFilterColumn =
         { defaults
         | tableAttrs = [ class "table table-hover table-bordered" ]
         , thead = thead onFilterColumn
+        , rowAttrs = toRowAttrs
         }
 
 thead : (String -> String -> msg) -> List (String, Table.Status, Attribute msg) -> Table.HtmlDetails msg

@@ -4,10 +4,12 @@ import Data.Company exposing (Company)
 import Http
 import Html exposing (..)
 import Html.Attributes exposing (href, class, type_, placeholder, classList)
+import Html.Events exposing (onClick)
 import Request.Company
 import Task exposing (Task)
 import Views.FilterableTable as FTable exposing (Filters, ColumnConfig)
 import Table
+import Route
 
 type alias Model =
     { tableState : Table.State
@@ -60,13 +62,19 @@ config =
             , Table.stringColumn phoneNumber.name phoneNumber.toStr
             , Table.stringColumn email.name email.toStr
             ]
-        , customizations = FTable.customizations SetColumnFilter
+        , customizations = FTable.customizations SetColumnFilter toRowAttrs
         }
+
+toRowAttrs : Company -> List (Attribute Msg)
+toRowAttrs company =
+    [ onClick (NavigateToCompany company.id)
+    ]
 
 type Msg
     = NoOp
     | SetTableState Table.State
     | SetColumnFilter String String
+    | NavigateToCompany String
 
 view : Model -> Html Msg
 view { tableState, filters, companies } =
@@ -98,3 +106,6 @@ update msg model =
                     model.filters
             in
             ({ model | filters = (FTable.setFilterTerm columnName filterTerm currentFilters) }, Cmd.none )
+
+        NavigateToCompany id ->
+            ( model, Route.modifyUrl (Route.Company id) )

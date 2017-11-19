@@ -14,7 +14,8 @@ import Views.Form as Form
 import Views.Button as Button
 
 type alias Model =
-    { sourcePlace : Place
+    { isValidationStarted : Bool
+    , sourcePlace : Place
     , editingPlace : Place
     }
 
@@ -28,7 +29,7 @@ isAdd model =
 
 populateModel : Place -> Model
 populateModel place =
-    Model place place
+    Model False place place
 
 init : PlaceId -> Task Http.Error Model
 init id =
@@ -64,6 +65,7 @@ view model =
 placeForm : Model -> Html Msg
 placeForm model =
     let
+        { isValidationStarted } = model
         title =
             if isAdd model then
                 "Add new place"
@@ -74,13 +76,13 @@ placeForm model =
         name =
             model.editingPlace.name
         hasPostalCodeErrors =
-            not <| Validate.any postalCodeValidators postalCode
+            isValidationStarted && (not <| Validate.any postalCodeValidators postalCode)
         postalCodeErrors =
-            Validate.all postalCodeValidators postalCode
+            if isValidationStarted then Validate.all postalCodeValidators postalCode else []
         hasNameErrors =
-            not <| Validate.any nameValidators name
+            isValidationStarted && (not <| Validate.any nameValidators name)
         nameErrors =
-            Validate.all nameValidators name
+            if isValidationStarted then  Validate.all nameValidators name else []
     in
     div []
         [ h3 [] [ text title ]
@@ -90,7 +92,7 @@ placeForm model =
            , Form.textInput "Name" [ value name, onInput SetName ] nameErrors
            , div [ class "col-sm-offset-2" ]
                 [ Button.actionButton
-                    "Save" Button.Primary [ disabled (hasPostalCodeErrors || hasNameErrors), onClick Save ] []
+                    "Save" Button.Primary [ disabled (isValidationStarted && (hasPostalCodeErrors || hasNameErrors)), onClick Save ] []
                 , Button.actionButton
                     " Back" Button.Default [ onClick NavigateBack ] [ i [ class "fa fa-chevron-left" ] [] ]
                 , Button.actionButton
@@ -131,6 +133,7 @@ update msg model =
 
         Save ->
             let
+                { isValidationStarted } = model
                 newModel =
                     if isEdit model then
                         model
@@ -140,12 +143,15 @@ update msg model =
                         in
                             { model | editingPlace = newPlace }
             in
-            ( newModel
-            , Cmd.batch
-                [ Http.send SaveCompleted (Request.Place.savePlace newModel.editingPlace)
-                , redirectToPlaces
-                ]
-             )
+                if isValidationStarted then
+                    ( newModel
+                    , Cmd.batch
+                        [ Http.send SaveCompleted (Request.Place.savePlace newModel.editingPlace)
+                        , redirectToPlaces
+                        ]
+                     )
+                 else
+                    ( { model | isValidationStarted = True }, Cmd.none )
 
         SaveCompleted (Ok place) ->
             ( model, Cmd.none )
