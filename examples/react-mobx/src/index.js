@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
+import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import { createPlaceStore } from './place/placeStore';

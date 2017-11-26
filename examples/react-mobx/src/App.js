@@ -9,12 +9,19 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Welcome to Company Registry</h1>
-        <SideNav/>
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route path='/places' component={PlacesPage} />
-        </Switch>
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-sm-2">
+              <SideNav />
+            </div>
+            <div className="col-sm-10">
+              <Switch>
+                <Route exact path='/' component={HomePage} />
+                <Route path='/places' component={PlacesPage} />
+              </Switch>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -4,7 +4,9 @@ import { observer, inject } from 'mobx-react';
 
 const HomePageComponent = () => {
   return (
-    <div>Home page</div>
+    <div>
+      <h1>Welcome to Company Registry</h1>
+    </div>
   );
 };
 
