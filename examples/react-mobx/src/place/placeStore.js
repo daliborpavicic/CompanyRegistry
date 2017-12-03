@@ -1,12 +1,41 @@
 import { observable, action } from 'mobx';
 import { PlaceService } from '../api/crudServices';
+import { isRequired } from '../common/validators';
+import { createForm } from '../common/formHelpers';
+
+const createEmptyPlace = () => ({
+  _id: '',
+  name: '',
+  postalCode: '',
+});
 
 export const createPlaceStore = () => {
   const state = observable({
     places: observable.shallowArray([]),
     selectedPlace: null,
     isLoading: false,
+    placeForm: observable.ref(null),
+    get isPlaceSelected() {
+      return state.selectedPlace !== null && state.placeForm !== null;
+    },
   });
+
+  const createPlaceForm = (place) => {
+    const placeFormFields = {
+      _id: {},
+      postalCode: { label: 'Postal Code', validators: [isRequired] },
+      name: { label: 'Name', validators: [isRequired] }
+    };
+
+    if(place._id) {
+      placeFormFields._id.initialValue = place._id;
+    }
+
+    placeFormFields.postalCode.initialValue = place.postalCode;
+    placeFormFields.name.initialValue = place.name;
+
+    return createForm(placeFormFields);
+  };
 
   const setPlaces = action((newPlaces) => {
     state.places.replace(newPlaces);
@@ -16,8 +45,24 @@ export const createPlaceStore = () => {
     state.selectedPlace = place;
   });
 
+  const selectPlaceForEdit = (place) => {
+    setSelectedPlace(place);
+    state.placeForm = createPlaceForm(place);
+  };
+
+  const selectPlaceForAdd = () => {
+    const newPlace = createEmptyPlace();
+    setSelectedPlace(newPlace);
+    state.placeForm = createPlaceForm(newPlace);
+  };
+
   const setIsLoading = action((isLoading) => {
     state.isLoading = isLoading;
+  });
+
+  const clearSelectedPlace = action(() => {
+    state.selectedPlace = null;
+    state.placeForm = null;
   });
 
   const fetchPlaces = action(() => {
@@ -35,18 +80,42 @@ export const createPlaceStore = () => {
     setIsLoading(true);
 
     PlaceService.getResourceById(id).then(action(place => {
-      setSelectedPlace(place);
+      selectPlaceForEdit(place);
       setIsLoading(false);
     }), action(() => {
+      clearSelectedPlace();
       setIsLoading(false);
     }));
   });
 
+  const saveSelectedPlace = () => {
+    const placeFormValues = state.placeForm.getAllValues();
+
+    if(!placeFormValues._id) {
+      placeFormValues._id = placeFormValues.postalCode;
+    }
+
+    return PlaceService.saveOrUpdateResource(placeFormValues);
+  };
+
+  const deleteSelectedPlace = () => {
+    return PlaceService.deleteResourceWithId(state.selectedPlace._id);
+  };
+
+  const revertFormChanges = () => {
+    state.placeForm.reset();
+  };
+
+  const isExistingPlaceSelected = () => state.isPlaceSelected && !!state.selectedPlace._id;
+
   return {
     state,
-    setPlaces,
-    setSelectedPlace,
+    selectPlaceForAdd,
     fetchPlaces,
     fetchPlaceById,
+    saveSelectedPlace,
+    deleteSelectedPlace,
+    revertFormChanges,
+    isExistingPlaceSelected,
   };
 };
