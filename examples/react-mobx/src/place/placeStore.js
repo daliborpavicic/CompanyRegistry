@@ -2,12 +2,18 @@ import { observable, action } from 'mobx';
 import { PlaceService } from '../api/crudServices';
 import { isRequired } from '../common/validators';
 import { createForm } from '../common/formHelpers';
+import { TableStore } from '../common/TableStore';
 
 const createEmptyPlace = () => ({
   _id: '',
   name: '',
   postalCode: '',
 });
+
+const columns = [
+  {key: 'postalCode', name: 'Postal Code'},
+  {key: 'name', name: 'Name'},
+];
 
 export const createPlaceStore = () => {
   const state = observable({
@@ -19,6 +25,11 @@ export const createPlaceStore = () => {
       return state.selectedPlace !== null && state.placeForm !== null;
     },
   });
+
+  const tableStoreArgs = { columns, initialSort: 'postalCode', dataGetter: () => state.places };
+  const placesTableStore = new TableStore(tableStoreArgs);
+
+  state.tableStore = placesTableStore;
 
   const createPlaceForm = (place) => {
     const placeFormFields = {
