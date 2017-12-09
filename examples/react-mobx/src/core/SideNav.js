@@ -1,7 +1,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 const SideNavComponent = () => {
   return (
@@ -18,4 +18,4 @@ const SideNavComponent = () => {
 
 SideNavComponent.propTypes = {};
 
-export const SideNav = inject()(observer(SideNavComponent));
+export const SideNav = withRouter(inject()(observer(SideNavComponent)))

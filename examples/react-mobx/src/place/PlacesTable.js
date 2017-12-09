@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
+import { Table } from '../common/Table';
 
 class PlacesTableComponent extends Component {
   componentDidMount() {
@@ -26,6 +27,7 @@ class PlacesTableComponent extends Component {
             </li>
           ))}
         </ul>
+        <Table tableStore={placeStore.state.tableStore} />
       </div>
     );
   }

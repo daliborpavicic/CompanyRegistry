@@ -1,19 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter } from 'react-router-dom';
-import { Provider } from 'mobx-react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import App from './App';
-import { createPlaceStore } from './place/placeStore';
+import { Root } from './Root';
 
-const placeStore = createPlaceStore();
-const stores = { placeStore };
-
-ReactDOM.render(
-  <HashRouter>
-    <Provider {...stores}>
-      <App />
-    </Provider>
-  </HashRouter>
-, document.getElementById('root'));
+ReactDOM.render(<Root />, document.getElementById('root'));
