@@ -5,12 +5,26 @@ import { observer, inject } from 'mobx-react';
 import { Table } from '../common/Table';
 
 class PlacesTableComponent extends Component {
+  constructor() {
+    super();
+    this.handlePlaceRowClick = this.handlePlaceRowClick.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+  }
+
   componentDidMount() {
     this.props.placeStore.fetchPlaces();
   }
 
+  handlePlaceRowClick(placeId) {
+    this.props.history.push(`/places/${placeId}`);
+  }
+
+  handleAddButtonClick() {
+    this.props.history.push('/places/new');
+  }
+
   render() {
-    const { history, placeStore } = this.props;
+    const { placeStore } = this.props;
 
     if(placeStore.state.isLoading) {
       return <div>Loading...</div>
@@ -18,16 +32,11 @@ class PlacesTableComponent extends Component {
 
     return (
       <div>
-        <ul>
-          {placeStore.state.places.map(place => (
-            <li key={place._id}>
-              <button onClick={() => { history.push('/places/' + place._id); }}>
-                Place {place._id}
-              </button>
-            </li>
-          ))}
-        </ul>
-        <Table tableStore={placeStore.state.tableStore} />
+        <Table tableStore={placeStore.state.tableStore} onClickRow={this.handlePlaceRowClick} />
+        <hr />
+        <button type="button" className="btn btn-info" onClick={this.handleAddButtonClick}>
+          Add new place
+        </button>
       </div>
     );
   }

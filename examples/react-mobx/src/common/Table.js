@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { TableStore } from './TableStore';
 
-// TODO: Add an onRowClick property to be able to navigate on row's details
 class TableComponent extends Component {
   constructor() {
     super();
@@ -12,6 +11,7 @@ class TableComponent extends Component {
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
     this.handlePageNumberClick = this.handlePageNumberClick.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
   }
 
   handleHeaderClick(event) {
@@ -39,6 +39,12 @@ class TableComponent extends Component {
     const pageNumber = +event.target.dataset.pageNumber;
 
     this.props.tableStore.setCurrentPage(pageNumber);
+  }
+
+  handleRowClick(event) {
+    const targetItemId = event.target.dataset.itemId;
+
+    this.props.onClickRow(targetItemId);
   }
 
   render() {
@@ -109,14 +115,17 @@ class TableComponent extends Component {
           {tableStore.visibleData.map((item) => {
             const cells = tableStore.columns.map(column => {
               const columnKey = column.key;
+              const itemId = item._id;
 
               return (
-                <td key={`${item._id}_${columnKey}`}>{item[ columnKey ]}</td>
+                <td key={`${itemId}_${columnKey}`} data-item-id={itemId}>
+                  {item[ columnKey ]}
+                </td>
               );
             });
 
             return (
-              <tr key={item._id}>
+              <tr key={item._id} onClick={this.handleRowClick}>
                 {cells}
               </tr>
             );
@@ -142,7 +151,12 @@ class TableComponent extends Component {
 };
 
 TableComponent.propTypes = {
-  tableStore: PropTypes.instanceOf(TableStore).isRequired
+  tableStore: PropTypes.instanceOf(TableStore).isRequired,
+  onClickRow: PropTypes.func
+};
+
+TableComponent.defaultProps = {
+  onClickRow: (rowId) => { console.log(rowId); }
 };
 
 export const Table = inject()(observer(TableComponent));
