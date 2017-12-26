@@ -77,8 +77,8 @@ export function TableStore({
       const currentPage = this.pagination.currentPage;
       const pageSize = this.pagination.pageSize;
 
-      const startIndex = Math.max(0, currentPage - 1) * pageSize;
-      const endIndex = Math.min(currentPage * pageSize, this.sortedData.length);
+      const endIndex = currentPage * Math.min(pageSize, this.sortedData.length);
+      const startIndex = endIndex - pageSize;
 
       return this.sortedData.slice(startIndex, endIndex);
     },
