@@ -5,6 +5,7 @@ import { HomePage } from './core/HomePage';
 import { SideNav } from './core/SideNav';
 import { PlacesPage } from './place/PlacesPage';
 import { CompaniesPage } from './company/CompaniesPage';
+import { EmployeesPage } from './employee/EmployeesPage';
 
 class App extends Component {
   render() {
@@ -20,6 +21,7 @@ class App extends Component {
                 <Route exact path='/' component={HomePage} />
                 <Route path='/places' component={PlacesPage} />
                 <Route path='/companies' component={CompaniesPage} />
+                <Route path='/employees' component={EmployeesPage} />
               </Switch>
             </div>
           </div>

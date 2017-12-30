@@ -20,7 +20,7 @@ class PlaceDetailsPageComponent extends Component {
 
     if (placeStore.state.isLoading) {
       return <div>Loading place {match.params.id}</div>
-    } else if (placeStore.state.isCompanySelected) {
+    } else if (placeStore.state.isPlaceSelected) {
       return (
         <div>
           <PlaceForm />
