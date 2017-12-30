@@ -18,11 +18,11 @@ const columns = [
 export const createPlaceStore = () => {
   const state = observable({
     places: observable.shallowArray([]),
-    selectedCompany: null,
+    selectedPlace: null,
     isLoading: false,
-    companyForm: observable.ref(null),
-    get isCompanySelected() {
-      return state.selectedCompany !== null && state.companyForm !== null;
+    placeForm: observable.ref(null),
+    get isPlaceSelected() {
+      return state.selectedPlace !== null && state.placeForm !== null;
     },
   });
 
@@ -53,18 +53,18 @@ export const createPlaceStore = () => {
   });
 
   const setSelectedPlace = action((place) => {
-    state.selectedCompany = place;
+    state.selectedPlace = place;
   });
 
   const selectPlaceForEdit = (place) => {
     setSelectedPlace(place);
-    state.companyForm = createPlaceForm(place);
+    state.placeForm = createPlaceForm(place);
   };
 
   const selectPlaceForAdd = () => {
     const newPlace = createEmptyPlace();
     setSelectedPlace(newPlace);
-    state.companyForm = createPlaceForm(newPlace);
+    state.placeForm = createPlaceForm(newPlace);
   };
 
   const setIsLoading = action((isLoading) => {
@@ -72,8 +72,8 @@ export const createPlaceStore = () => {
   });
 
   const clearSelectedPlace = action(() => {
-    state.selectedCompany = null;
-    state.companyForm = null;
+    state.selectedPlace = null;
+    state.placeForm = null;
   });
 
   const fetchPlaces = action(() => {
@@ -100,7 +100,7 @@ export const createPlaceStore = () => {
   });
 
   const saveSelectedPlace = () => {
-    const placeFormValues = state.companyForm.getAllValues();
+    const placeFormValues = state.placeForm.getAllValues();
 
     if(!placeFormValues._id) {
       placeFormValues._id = placeFormValues.postalCode;
@@ -110,10 +110,10 @@ export const createPlaceStore = () => {
   };
 
   const deleteSelectedPlace = () => {
-    return PlaceService.deleteResourceWithId(state.selectedCompany._id);
+    return PlaceService.deleteResourceWithId(state.selectedPlace._id);
   };
 
-  const isExistingPlaceSelected = () => state.isCompanySelected && !!state.selectedCompany._id;
+  const isExistingPlaceSelected = () => state.isPlaceSelected && !!state.selectedPlace._id;
 
   return {
     state,

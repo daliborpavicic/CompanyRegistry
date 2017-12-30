@@ -4,10 +4,12 @@ import { Provider } from 'mobx-react';
 import App from './App';
 import { createPlaceStore } from './place/placeStore';
 import { createCompanyStore } from './company/companyStore';
+import { createEmployeeStore } from './employee/employeeStore';
 
 const placeStore = createPlaceStore();
 const companyStore = createCompanyStore();
-const stores = { placeStore, companyStore };
+const employeeStore = createEmployeeStore();
+const stores = { placeStore, companyStore, employeeStore };
 
 window.AppState = stores;
 
