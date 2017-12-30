@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import { HomePage } from './core/HomePage';
 import { SideNav } from './core/SideNav';
 import { PlacesPage } from './place/PlacesPage';
+import { CompaniesPage } from './company/CompaniesPage';
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
               <Switch>
                 <Route exact path='/' component={HomePage} />
                 <Route path='/places' component={PlacesPage} />
+                <Route path='/companies' component={CompaniesPage} />
               </Switch>
             </div>
           </div>
