@@ -12,6 +12,12 @@ const SideNavComponent = () => {
       <li className="nav-item">
         <Link to="/places">Places</Link>
       </li>
+      <li className="nav-item">
+        <Link to="/companies">Companies</Link>
+      </li>
+      <li className="nav-item">
+        <Link to="/employees">Employees</Link>
+      </li>
     </ul>
   );
 };

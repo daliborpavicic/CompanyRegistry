@@ -18,11 +18,11 @@ const columns = [
 export const createPlaceStore = () => {
   const state = observable({
     places: observable.shallowArray([]),
-    selectedPlace: null,
+    selectedCompany: null,
     isLoading: false,
-    placeForm: observable.ref(null),
-    get isPlaceSelected() {
-      return state.selectedPlace !== null && state.placeForm !== null;
+    companyForm: observable.ref(null),
+    get isCompanySelected() {
+      return state.selectedCompany !== null && state.companyForm !== null;
     },
   });
 
@@ -53,18 +53,18 @@ export const createPlaceStore = () => {
   });
 
   const setSelectedPlace = action((place) => {
-    state.selectedPlace = place;
+    state.selectedCompany = place;
   });
 
   const selectPlaceForEdit = (place) => {
     setSelectedPlace(place);
-    state.placeForm = createPlaceForm(place);
+    state.companyForm = createPlaceForm(place);
   };
 
   const selectPlaceForAdd = () => {
     const newPlace = createEmptyPlace();
     setSelectedPlace(newPlace);
-    state.placeForm = createPlaceForm(newPlace);
+    state.companyForm = createPlaceForm(newPlace);
   };
 
   const setIsLoading = action((isLoading) => {
@@ -72,8 +72,8 @@ export const createPlaceStore = () => {
   });
 
   const clearSelectedPlace = action(() => {
-    state.selectedPlace = null;
-    state.placeForm = null;
+    state.selectedCompany = null;
+    state.companyForm = null;
   });
 
   const fetchPlaces = action(() => {
@@ -100,7 +100,7 @@ export const createPlaceStore = () => {
   });
 
   const saveSelectedPlace = () => {
-    const placeFormValues = state.placeForm.getAllValues();
+    const placeFormValues = state.companyForm.getAllValues();
 
     if(!placeFormValues._id) {
       placeFormValues._id = placeFormValues.postalCode;
@@ -110,14 +110,10 @@ export const createPlaceStore = () => {
   };
 
   const deleteSelectedPlace = () => {
-    return PlaceService.deleteResourceWithId(state.selectedPlace._id);
+    return PlaceService.deleteResourceWithId(state.selectedCompany._id);
   };
 
-  const revertFormChanges = () => {
-    state.placeForm.reset();
-  };
-
-  const isExistingPlaceSelected = () => state.isPlaceSelected && !!state.selectedPlace._id;
+  const isExistingPlaceSelected = () => state.isCompanySelected && !!state.selectedCompany._id;
 
   return {
     state,
@@ -126,7 +122,6 @@ export const createPlaceStore = () => {
     fetchPlaceById,
     saveSelectedPlace,
     deleteSelectedPlace,
-    revertFormChanges,
     isExistingPlaceSelected,
   };
 };
