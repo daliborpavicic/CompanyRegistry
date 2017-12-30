@@ -19,7 +19,13 @@ class FormComponent extends Component {
       <form className="form-horizontal">
         {children}
         <div className="col-sm-offset-2">
-          <button type="button" className="btn btn-primary" onClick={onSave}>Save</button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={!form.isValid()}
+            onClick={onSave}>
+            Save
+          </button>
           <button type="button" className="btn btn-default" onClick={onBack}>
             <i className="fa fa-chevron-left" /> Back
           </button>
