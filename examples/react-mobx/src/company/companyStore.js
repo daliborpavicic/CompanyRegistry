@@ -38,7 +38,7 @@ export const createCompanyStore = () => {
   const createCompanyForm = (company) => {
     const companyFormFields = {
       _id: {},
-      postalCode: { label: 'PIB', validators: [isRequired] },
+      pib: { label: 'PIB', validators: [isRequired] },
       name: { label: 'Name', validators: [isRequired] },
       phoneNumber: { label: 'Phone Number', validators: [isRequired] },
       email: { label: 'Email', validators: [isRequired] }
@@ -48,8 +48,10 @@ export const createCompanyStore = () => {
       companyFormFields._id.initialValue = company._id;
     }
 
-    companyFormFields.postalCode.initialValue = company.postalCode;
+    companyFormFields.pib.initialValue = company.pib;
     companyFormFields.name.initialValue = company.name;
+    companyFormFields.phoneNumber.initialValue = company.phoneNumber;
+    companyFormFields.email.initialValue = company.email;
 
     return createForm(companyFormFields);
   };
@@ -62,9 +64,9 @@ export const createCompanyStore = () => {
     state.selectedCompany = place;
   });
 
-  const selectCompanyForEdit = (place) => {
-    setSelectedCompany(place);
-    state.companyForm = createCompanyForm(place);
+  const selectCompanyForEdit = (company) => {
+    setSelectedCompany(company);
+    state.companyForm = createCompanyForm(company);
   };
 
   const selectCompanyForAdd = () => {
@@ -96,8 +98,8 @@ export const createCompanyStore = () => {
   const fetchCompanyById = action((id) => {
     setIsLoading(true);
 
-    CompanyService.getResourceById(id).then(action(place => {
-      selectCompanyForEdit(place);
+    CompanyService.getResourceById(id).then(action(company => {
+      selectCompanyForEdit(company);
       setIsLoading(false);
     }), action(() => {
       clearSelectedCompany();
@@ -106,13 +108,13 @@ export const createCompanyStore = () => {
   });
 
   const saveSelectedCompany = () => {
-    const placeFormValues = state.companyForm.getAllValues();
+    const companyFormValues = state.companyForm.getAllValues();
 
-    if(!placeFormValues._id) {
-      placeFormValues._id = placeFormValues.postalCode;
+    if(!companyFormValues._id) {
+      companyFormValues._id = companyFormValues.postalCode;
     }
 
-    return CompanyService.saveOrUpdateResource(placeFormValues);
+    return CompanyService.saveOrUpdateResource(companyFormValues);
   };
 
   const deleteSelectedCompany = () => {
