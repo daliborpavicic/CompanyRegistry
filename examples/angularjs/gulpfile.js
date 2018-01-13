@@ -3,7 +3,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var webserver = require('gulp-webserver');
-var bowerFiles = require('bower-files')();
+var mainBowerFiles = require('main-bower-files');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var concatCss = require('gulp-concat-css');
@@ -21,7 +21,7 @@ var jsSources = [
 ];
 
 gulp.task('vendorScripts', function() {
-  return gulp.src(bowerFiles.ext('js').files)
+  return gulp.src(mainBowerFiles(), { base: 'assets/js' })
   .pipe(concat('vendor.min.js'))
   .pipe(uglify())
   .pipe(gulp.dest('dist'))
